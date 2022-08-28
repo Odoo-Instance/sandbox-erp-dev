@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+# Copyright (C) 2022-TODAY CoderLab Technology Pvt Ltd
+# https://coderlabtechnology.com 
+-->
+<odoo>
+
+    <record id="acknowledgement_mail" model="mail.template">
+        <field name="name">Acknowledgement Mail</field>
+        <field name="model_id" ref="cc_application.model_grant_application"/>
+        <field name="subject">Grant Application [Ref. {{ object.name }}]</field>
+        <field name="email_from">{{ ctx.get('email_from') }}</field>
+        <field name="email_to">{{ object.email }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <td align="center" style="min-width: 590px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                        <tr><td valign="top" style="font-size: 13px;">
+                            <div>
+                                <p>
+                                    Dear <t t-out="object.your_name" style="font-weight:bold"/>,
+                                </p>
+                                <p>Ref: Grant Application: <t t-out="object.name" />.</p>
+                                <p>Thank you for registering your interest in Grant with Cornwall Council.<br/></p>
+                                <p>Your details will now be reviewed and you should shortly expect a further email from us to complete our full Grant Application form.<br/></p>
+                                <p>If you require any help or assistance, please call us on	0300 1234 100.<br/></p>
+                                <p>
+                                    Many thanks<br/>
+                                    Cornwall Council Grants Department
+                                </p>
+
+                            </div>
+                        </td></tr>
+                    </table>
+                </td>
+            </div>
+        </field>
+    </record>
+
+    <record id="acknowledgement_mail_tier3" model="mail.template">
+        <field name="name">Acknowledgement Mail</field>
+        <field name="model_id" ref="cc_application.model_grant_application"/>
+        <field name="subject">Grant Application [Ref. {{ object.name }}]</field>
+        <field name="email_from">{{ ctx.get('email_from') }}</field>
+        <field name="email_to">{{ object.email }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <td align="center" style="min-width: 590px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                        <tr><td valign="top" style="font-size: 13px;">
+                            <div>
+                                <p>
+                                    Dear <t t-out="object.your_name" style="font-weight:bold"/>,
+                                </p>
+                                <p>Ref: Grant Application: <t t-out="object.name" />.</p>
+                                <p>Thank you for registering your interest in Grant with Cornwall Council.<br/></p>
+                                <p>Your details will now be reviewed and you should expect to hear from us shortly, to explain the next steps.<br/></p>
+                                <p>If you require any help or assistance, please call us on 0300 1234 100.<br/></p>
+                                <p>
+                                    Many thanks<br/>
+                                    Cornwall Council Grants Department
+                                </p>
+
+                            </div>
+                        </td></tr>
+                    </table>
+                </td>
+            </div>
+        </field>
+    </record>
+
+    <record id="round_expiry_email" model="mail.template">
+        <field name="name">Round Expiry Mail</field>
+        <field name="model_id" ref="cc_application.model_grant_application"/>
+        <field name="subject">Grant Application [Ref. {{ object.name }}]</field>
+        <field name="email_from">{{ ctx.get('email_from') }}</field>
+        <field name="email_to">{{ object.email }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <td align="center" style="min-width: 590px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                        <tr><td valign="top" style="font-size: 13px;">
+                            <div>
+                                <p>
+                                    Dear <t t-out="object.your_name" style="font-weight:bold"/>,
+                                </p>
+                                <p>Ref: Grant Application: <t t-out="object.name" />.</p>
+                                <p>Further to registering your interest in a Grant for <t t-out="object.project_name" /> we note you have not yet submitted your full application.<br/></p>
+                                <p>If this is still of interest, please submit your application before <t t-out="object.round_id.enddate.strftime('%d/%m/%Y')" />.<br/></p>
+                                <p>Please login to your portal to complete the form.<br/></p>
+                                <p>
+                                    Best Regards<br/>
+                                    Cornwall Council Grants Department
+                                </p>
+                            </div>
+                        </td></tr>
+                    </table>
+                </td>
+            </div>
+        </field>
+    </record>
+
+    <record id="reminder_30_days" model="mail.template">
+        <field name="name">Reminder 30 days Notification</field>
+        <field name="model_id" ref="cc_application.model_grant_application"/>
+        <field name="subject">Grant Application [Ref. {{ object.name }}]</field>
+        <field name="email_from">{{ ctx.get('email_from') }}</field>
+        <field name="email_to">{{ object.email }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <td align="center" style="min-width: 590px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                        <tr><td valign="top" style="font-size: 13px;">
+                            <div>
+                                <p>
+                                    Dear <t t-out="object.your_name" style="font-weight:bold"/>,
+                                </p>
+                                <p>Ref: Grant Application: <t t-out="object.name" />.</p>
+                                <p>Further to registering your interest in a Grant for <t t-out="object.project_name" /> we still require you to complete our full application so that we can assess the level of Grant potentially available.<br/></p>
+                                <p>Please login to your portal to complete the form.<br/></p>
+                                <p>
+                                    Best Regards<br/>
+                                    Cornwall Council Grants Department
+                                </p>
+                            </div>
+                        </td></tr>
+                    </table>
+                </td>
+            </div>
+        </field>
+    </record>
+
+    <record id="reminder_60_days" model="mail.template">
+        <field name="name">Reminder 60 days Notification</field>
+        <field name="model_id" ref="cc_application.model_grant_application"/>
+        <field name="subject">Grant Application [Ref. {{ object.name }}]</field>
+        <field name="email_from">{{ ctx.get('email_from') }}</field>
+        <field name="email_to">{{ object.email }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <td align="center" style="min-width: 590px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                        <tr><td valign="top" style="font-size: 13px;">
+                            <div>
+                                <p>
+                                    Dear <t t-out="object.your_name" style="font-weight:bold"/>,
+                                </p>
+                                <p>Ref: Grant Application: <t t-out="object.name" />.</p>
+                                <p>We note that there has been no response or activity on your application form.<br/></p>
+                                <p>We have therefore de-activated it.<br/></p>
+                                <p>Please call us if you need to submit.<br/></p>
+                                <p>
+                                    Best Regards<br/>
+                                    Cornwall Council Grants Department
+                                </p>
+                            </div>
+                        </td></tr>
+                    </table>
+                </td>
+            </div>
+        </field>
+    </record>
+
+    <record id="application_more_info" model="mail.template">
+        <field name="name">EOI – FURTHER INFO</field>
+        <field name="model_id" ref="cc_application.model_grant_application"/>
+        <field name="subject">Grant Application [Ref. {{ object.name }}]</field>
+        <field name="email_from">{{ ctx.get('email_from') }}</field>
+        <field name="email_to">{{ object.email }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <td align="center" style="min-width: 590px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                        <tr><td valign="top" style="font-size: 13px;">
+                            <div>
+                                <p>
+                                    Dear <t t-out="object.your_name" style="font-weight:bold"/>,
+                                </p>
+                                <p>Following our initial assessment of your grant application in to <t t-out="object.project_name"/> we require some further information:</p>
+                                <ul>
+                                    <li>A</li>
+                                    <li>B</li>
+                                    <li>C</li>
+                                </ul>
+                                <p>Please provide the above for us to re-assess and qualify your application.<br/></p>
+                                <p>
+                                    Best regards<br/>
+                                    Cornwall Council Grants Department
+                                </p>
+
+                            </div>
+                        </td></tr>
+                    </table>
+                </td>
+            </div>
+        </field>
+    </record>
+
+    <record id="application_eoi_failed" model="mail.template">
+        <field name="name">EOI – REJECTION</field>
+        <field name="model_id" ref="cc_application.model_grant_application"/>
+        <field name="subject">Grant Application [Ref. {{ object.name }}]</field>
+        <field name="email_from">{{ ctx.get('email_from') }}</field>
+        <field name="email_to">{{ object.email }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <td align="center" style="min-width: 590px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                        <tr><td valign="top" style="font-size: 13px;">
+                            <div>
+                                <p>
+                                    Dear <t t-out="object.your_name" style="font-weight:bold"/>,
+                                </p>
+                                <p>Thank you for your grant application in relation to <t t-out="object.project_name"/>.</p>
+                                <p>Following our initial assessment we regret to inform that we are unable to progress your application. The key reasons being as follows:</p>
+                                <ul>
+                                    <t t-if="not object.is_business_exist">
+                                        <li>Does the Business exist?</li>
+                                    </t>
+                                    <t t-if="not object.is_location_eligible">
+                                        <li>Is the location eligible?</li>
+                                    </t>
+                                    <t t-if="not object.is_cost_broadly_eligible">
+                                        <li>Are the costs broadly eligible?</li>
+                                    </t>
+                                    <t t-if="not object.is_eligible_limit">
+                                        <li>Is the Grant requested within eligible limits?</li>
+                                    </t>
+                                    <t t-if="not object.is_description_clear">
+                                        <li>Is the Project description is clear?</li>
+                                    </t>
+                                    <t t-if="not object.is_timesheet_real">
+                                        <li>Are the Timescales realistic?</li>
+                                    </t>
+                                    <t t-if="not object.is_strategic_fit_score">
+                                        <li>Does the Strategic Fit Score?</li>
+                                    </t>
+                                    <t t-if="not object.is_initial_vfm">
+                                        <li>Will the initial output deliver VFM?</li>
+                                    </t>
+                                </ul>
+                                <p>To re-consider your application, please provide any further information to support your application that responds to the above issues.<br/></p>
+                                <p>
+                                    Best regards<br/>
+                                    Cornwall Council Grants Department
+                                </p>
+                            </div>
+                        </td></tr>
+                    </table>
+                </td>
+            </div>
+        </field>
+    </record>
+
+    <record id="notification_email" model="mail.template">
+        <field name="name">Notification Mail</field>
+        <field name="model_id" ref="cc_application.model_grant_application"/>
+        <field name="subject">Grant Application [Ref. {{ object.name }}]</field>
+        <field name="email_from">{{ ctx.get('email_from') }}</field>
+        <field name="email_to">{{ ctx.get('email_to') }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <td align="center" style="min-width: 590px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                        <tr><td valign="top" style="font-size: 13px;">
+                            <div>
+                                <p>
+                                    Dear <t t-out="ctx.get('user_name')" style="font-weight:bold"/>,
+                                </p>
+                                <p>Ref: Grant Application: <t t-out="object.name" />.</p>
+                                <p>There is one new Grant application for the Review.<br/></p>
+                                <div style="margin: 16px 0px 16px 0px;">
+                                    <a t-att-href="ctx.get('url')"
+                                        style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                                        View Grant Application <t t-out="object.name"/>
+                                    </a>
+                                </div>
+                                <p>
+                                    Many thanks<br/>
+                                    Cornwall Council Grants Department
+                                </p>
+                            </div>
+                        </td></tr>
+                    </table>
+                </td>
+            </div>
+        </field>
+    </record>
+
+    <record id="rejection_email" model="mail.template">
+        <field name="name">Rejection Mail</field>
+        <field name="model_id" ref="cc_application.model_grant_application"/>
+        <field name="subject">Grant Application [Ref. {{ object.name }}]</field>
+        <field name="email_from">{{ ctx.get('email_from') }}</field>
+        <field name="email_to">{{ object.email }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <td align="center" style="min-width: 590px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                        <tr><td valign="top" style="font-size: 13px;">
+                            <div>
+                                <p>
+                                    Dear <t t-out="object.your_name" style="font-weight:bold"/>,
+                                </p>
+                                <p>Ref: Grant Application: <t t-out="object.name" />.</p>
+                                <p>Your Grant Application is Rejected.<br/></p>
+                                <p>The reason for the rejection is <t t-out="object.eoi_fail_note"/><br/></p>
+                                <p>
+                                    Many thanks<br/>
+                                    Cornwall Council Grants Department
+                                </p>
+                            </div>
+                        </td></tr>
+                    </table>
+                </td>
+            </div>
+        </field>
+    </record>
+
+    <function name="write" model="ir.model.data">
+            <function name="search" model="ir.model.data">
+                <value eval="[('module', '=', 'auth_signup'),
+                       ('name', '=', 'set_password_email')]"/>
+            </function>
+            <value eval="{'noupdate': False}"/>
+    </function>
+    <record id="auth_signup.set_password_email" model="mail.template">
+        <field name="subject">Cornwall Council - Grant Application</field>
+        <field name="email_from">"{{ object.company_id.name }}" &lt;{{ (object.company_id.email or user.email or ctx.get('email_from')) }}&gt;</field>
+        <field name="body_html" type="html">
+            <div>
+                <td align="center" style="min-width: 590px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="590" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                        <tr><td valign="top" style="font-size: 13px;">
+                            <div>
+                                <p>To progress your Grant Application, please complete our Application Form by logging in to our Portal through the link below:<br/><br/></p>
+
+                                <div style="margin: 16px 0px 16px 0px;">
+                                    <a t-att-href="object.signup_url"
+                                        style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;">
+                                        Accept invitation
+                                    </a>
+                                </div>
+
+                                <t t-set="website_url" t-value="object.get_base_url()"></t>
+                                <p>Portal Link: <b><a t-att-href='website_url' t-out="website_url or ''">http://yourcompany.odoo.com</a></b></p>
+                                <p>User Name: <b><a t-attf-href="/web/login?login={{ object.email }}" target="_blank" t-out="object.email or ''"></a></b><br/></p>
+                                <p>If you require any help or assistance, please call us on	0300 1234 100.<br/></p>
+                                
+                                <p>
+                                    Many thanks<br/>
+                                    Cornwall Council Grants Department
+                                </p>
+
+                            </div>
+                        </td></tr>
+                    </table>
+                </td>
+            </div>
+        </field>
+    </record>
+    <function name="write" model="ir.model.data">
+        <function name="search" model="ir.model.data">
+            <value eval="[('module', '=', 'auth_signup'),
+                   ('name', '=', 'set_password_email')]"/>
+        </function>
+        <value eval="{'noupdate': True}"/>
+    </function>
+
+</odoo>

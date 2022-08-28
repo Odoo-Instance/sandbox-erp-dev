@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_print_class_schedule">
+        <t t-call="web.external_layout">
+            <t t-set="doc" t-value="doc.with_context()"/>
+            <div class="page">
+                <div class="row mt-4  mb32">
+                    <div class="col-3">
+                        <h2><strong><p t-field="doc.name"/></strong></h2>
+                    </div>                   
+                </div>
+                <div class="mt-4">
+                    <h3>
+                        <strong>PROJECT INFO</strong>
+                    </h3>
+                </div>
+                <div class="row">
+                    <table width="100%" class="table">
+                        <tr>
+                           <td>Project Name: <span t-esc="doc.project_name"/></td>
+                           <td>Address,<t t-if="doc.street"><t t-esc="doc.street"/><span>,</span></t>
+                            <t t-if="doc.street2"><t t-esc="doc.street2"/><span>,</span></t>
+                            <t t-if="doc.city"><t t-esc="doc.city"/><span> </span></t>
+                            <t t-if="doc.state_id"><t t-esc="doc.state_id.name"/><span> </span></t>
+                            <t t-if="doc.zip"><t t-esc="doc.zip"/><span> </span></t>
+                            <t t-if="doc.country_id"><t t-esc="doc.country_id.name"/></t></td>
+                        </tr>
+                        <tr>
+                           <td>Project Description: <span t-esc="doc.project_description"/></td>
+                           <td></td>
+                        </tr>
+
+                        <br/>
+                        <br/>
+                        <tr>
+                            <td>Grant Types: <span t-esc="doc.grant_types_id.name"/></td>
+                            <td>Tier: <span t-esc="doc.tier"></span></td>
+                         </tr>
+                         
+                         <tr>
+                            <td>Project Location: <span t-esc="doc.project_location.name"/></td>
+                            <td>Round: <span t-esc="doc.round_id"/></td>
+                         </tr>
+                         <br/>
+                        <br/>
+                        <tr>
+                            <td>Total Grant Requested: <span t-esc="doc.total_grant_requested"/></td>
+                            <td>Planned Start Date: <span t-esc="doc.planned_start_date"></span></td>
+                         </tr>
+                         
+                         <tr>
+                            <td>Total Project Costs: <span t-esc="doc.total_project_cost"/></td>
+                            <td>Planned End Date: <span t-esc="doc.planned_end_date"/></td>
+                         </tr>
+                         <br/>
+                        <br/>
+                        <tr>
+                            <td>Existing project?:  <span t-esc="doc.is_previous_project"/></td>
+                            <td></td>
+                         </tr>
+                         
+                         <tr>
+                            <td>Which Project?: <span t-esc="doc.program"/></td>
+                            <td></td>
+                         </tr>
+                     </table>
+                </div>
+                <div class="mt-4">
+                    <h3>
+                        <strong>CONTACT INFO</strong>
+                    </h3>
+                </div>
+                <div class="row">
+                    <table width="100%" class="table">
+                        <br/>                        
+                        <tr>
+                            <td>Your Name?:  <span t-esc="doc.your_name"/></td>
+                            <td>Email: <span t-esc="doc.email"/></td>
+                         </tr>                         
+                         <tr>
+                            <td>Position: <span t-esc="doc.position"/></td>
+                            <td>Phone: <span t-esc="doc.phone"/></td>
+                         </tr>
+                         <tr>
+                            <td>Secondary Name: <span t-esc="doc.secondary_contact_name.name"/></td>
+                            <td>Alternative Phone: <span t-esc="doc.alter_phone"/></td>
+                         </tr>
+                         
+                    </table>
+
+
+                </div>
+
+                <br/>
+            </div>
+        </t>
+    </template>
+
+
+    <template id="repost_grant_application">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="cc_application.report_print_class_schedule"/>
+            </t>
+        </t>
+    </template>
+
+</odoo>

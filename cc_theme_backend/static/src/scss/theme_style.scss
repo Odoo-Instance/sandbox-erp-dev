@@ -1,0 +1,28 @@
+// To change odoo community theme color
+
+$o-community-color: #16405B;
+$o-brand-odoo: $o-community-color;
+$o-brand-primary: #F9B000;
+
+li {
+    a {
+        color: black !important;
+    }
+}
+
+.btn-secondary {
+    color: black !important;
+}
+
+// Shared with web client and login screen
+.o_home_menu_background {
+    background: url(/web_enterprise/static/src/img/home-menu-bg-overlay.svg),
+        linear-gradient(to right bottom, #16405B, #000d15);
+    background-size: cover;
+}
+
+.o_horizontal_separator {
+    color: $o-community-color;
+    font-size: 16px !important;
+    font-weight: bold !important;
+}

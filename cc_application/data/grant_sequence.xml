@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+# Copyright (C) 2022-TODAY CoderLab Technology Pvt Ltd
+# https://coderlabtechnology.com 
+-->
+<odoo>
+    <data noupdate='0'>
+        <record id="menu_application" model="website.menu">
+            <field name="name">Application</field>
+            <field name="url">/application</field>
+            <field name="parent_id" ref="website.main_menu" />
+            <field name="sequence" type="int">15</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="website_section_tree_form" model="ir.ui.view">
+        <field name="name">website.section.view.tree</field>
+        <field name="model">website.section</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="sequence" widget="handle" />
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_website_section" model="ir.actions.act_window">
+        <field name="name">Website Section</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">website.section</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <menuitem id="menu_website_section" name="Website Section"
+        sequence="50"
+        parent="menu_grant_configuration_submenu"
+        action="action_website_section" />
+
+</odoo>

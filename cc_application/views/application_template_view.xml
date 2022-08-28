@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="application_detail_page" name="Application">
+        <t t-call="website.layout">
+            <div class="oe_structure">
+                <div class="container">
+                    <section id='applicarion_sign_up_form_section'>
+                        <div style="margin-left: auto; margin-right: auto;">
+                            <div class='heading'>
+                                <h4>Grant Registration Form</h4>
+                            </div>
+                            <form method="post">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <div class='sub_heading'>
+                                    <h5>
+                                        <b>Applicant Contact Details</b>
+                                    </h5>
+                                </div>
+                                <div class='row mt-4'>
+                                    <div class='col-lg-6'>
+                                        <div class="form-group">
+                                            <label for="your_name">
+                                                <b>Name <i class="fa fa-info-circle" title="You will be the main contact during the application process." /></b>
+                                            </label>
+                                            <input type="text" class="form-control" id="your_name"
+                                                   required="required" name="your_name"/>
+                                        </div>
+                                    </div>
+                                    <div class='col-lg-6'>
+                                        <div class="form-group">
+                                            <label for="email">
+                                                <b>Email <i class="fa fa-info-circle" title="This should be your business email address where available, i.e., ideally not a Hotmail or Gmail account." /></b>
+                                            </label>
+                                            <input type="email" class="form-control" required="required" id="email" name="email"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='row'>
+                                    <div class='col-lg-6'>
+                                        <div class="form-group">
+                                            <label for="phone">
+                                                <b>Phone </b>
+                                            </label>
+                                            <input type="text" class="form-control" required="required" id="phone" name="phone"/>
+                                        </div>
+                                    </div>
+                                    <div class='col-lg-6'>
+                                        <div class="form-group">
+                                            <label for="position">
+                                                <b>Position <i class="fa fa-info-circle" title="You should ideally be the owner, director or shareholder of the business/organisation."/></b>
+                                            </label>
+                                            <input type="text" class="form-control" required="required" id="position" name="position"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='sub_heading'>
+                                    <h5>
+                                        <b>Project Requirements</b>
+                                    </h5>
+                                </div>
+                                <div class='row mt-4'>
+                                    <div class='col-lg-12'>
+                                        <div class="form-group">
+                                            <label for="business_name">
+                                                <b>Business Name <i class="fa fa-info-circle" title="This is the legal name of your business/organisation. Please also include your trading name if this differs."/></b>
+                                            </label>
+                                            <input type="text" class="form-control" id="business_name" required="required" name="business_name"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class='col-lg-6'>
+                                        <div class="form-group">
+                                            <label for="project_name">
+                                                <b>Project Name <i class="fa fa-info-circle" title="Please provide a name for your project. This should ideally not just be your business name but something which identifies your project and what you want to do. This should be short but descriptive and approx 7 words or less e.g. 'Shopfront Uplift'" /></b>
+                                            </label>
+                                            <input type="text" class="form-control" id="project_name" required="required" name="project_name"/>
+                                        </div>
+                                        <div class="form-group shadow-textarea">
+                                            <label for="project_description">
+                                                <b>Project Description <i class="fa fa-info-circle" title="Explain what activity you are seeking funding for in no more than 50 words." /></b>
+                                            </label>
+                                            <textarea class="form-control z-depth-1" style="height: 114px;" name="project_description" id="project_description" rows="3"
+                                                    required="required" placeholder="Project Description"></textarea>
+                                        </div>
+                                        <div class="form-group tier_value_change d-none">
+                                            <label for="grant_types_id">
+                                                <b>Grant Types</b>
+                                            </label>
+                                            <select class="form-control" name="grant_types_id" id="grant_types_id">
+                                                <t t-foreach="grant_types" t-as="gt">
+                                                    <option t-att-value="gt.id">
+                                                        <t t-esc="gt.name"/>
+                                                    </option>
+                                                </t>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class='col-lg-6'>
+                                        <div class="form-group">
+                                            <label for="project_location">
+                                                <b>Business Address</b>
+                                            </label>
+                                            <input type="text" class="form-control" name="street" id="street"
+                                                   placeholder="Street"/>
+                                            <input type="text" class="form-control mt-3" name="street2" id="street2"
+                                                   placeholder="Street2"/>
+                                            <div class="d-flex mt-3">
+                                                <input type="text" class="form-control s_website_form_input mr-3"
+                                                       name="city" id="city" style="width: 33%;"
+                                                       placeholder="Town/City"/>
+                                                <div class='js_cls_student_signup_state_state_wrapper mr-3 mt-n4 my-sm-n4'
+                                                     style="width: 33%;">
+                                                    <div class="form-group div_state">
+                                                        <label class="col-form-label" for="state_id"></label>
+                                                        <select class="form-control m-lg-0" name="state_id"
+                                                                id="state_id">
+                                                            <t t-set="state_id"
+                                                               t-value="request.env['res.country.state'].sudo().search([('country_id', '=' , 231)])"/>
+                                                            <t t-foreach="state_id" t-as="state">
+                                                                <option t-att-value="state.id"
+                                                                        t-att-selected="state.id == int(734)">
+                                                                    <t t-esc="state.name"/>
+                                                                </option>
+                                                            </t>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <input title="Please enter the postcode(s) at which the project activity will take place. This must be in the Penzance or St. Ives Town Deal area." type="text" class="form-control" name="zip" id="post_code"
+                                                       style="width: 33%;" placeholder="Post Code"/>
+                                            </div>
+                                            <div class="mt-3">
+                                                <div class='js_cls_student_signup_country_state_wrapper mt-lg-n4'>
+                                                    <div class="form-group div_country">
+                                                        <label class="col-form-label" for="country_id"></label>
+                                                        <select class="form-control s_website_form_input"
+                                                                disabled="disabled" name="country_id" id="country_id">
+                                                            <t t-set="country_id"
+                                                               t-value="request.env['res.country'].sudo().search([])"/>
+                                                            <t t-foreach="country_id" t-as="country">
+                                                                <option t-att-value="country.id"
+                                                                        t-att-selected="country.id == int(231)">
+                                                                    <t t-esc="country.name"/>
+                                                                </option>
+                                                            </t>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-5">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control mt-1 d-none" id="tier_one"
+                                               name="tier_one"/>
+                                        <input type="text" class="form-control mt-1 d-none" id="tier_two"
+                                               name="tier_two"/>
+                                        <input type="text" class="form-control mt-1 d-none" id="tier_three"
+                                               name="tier_three"/>
+                                        <input type="text" class="form-control mt-1 d-none" value='No Tier'
+                                               id="tier_value" name="tier_value"/>
+                                    </div>
+                                    <div class='col-lg-6'>
+                                        <div class="form-group">
+                                            <label for="project_location">
+                                                <b>Project Location <i class="fa fa-info-circle" title="Please provide the full address of the project."/></b>
+                                            </label>
+                                            <select class="form-control" required="required" name="project_location"
+                                                    id="project_location">
+                                                <option value=""></option>
+                                                <t t-foreach="project_location" t-as="pl">
+                                                    <option  t-att-value="pl.id">
+                                                        <t t-esc="pl.name"/>
+                                                    </option>
+                                                </t>
+                                            </select>
+                                        </div>
+                                        
+                                    </div>
+                                    <div class='col-lg-6 planned_date'>
+                                        <div class="form-group">
+                                            <label for="planned_start_date">
+                                                <b>Planned Start Date <i class="fa fa-info-circle" title="When would you like to start the funded project activity?  This cannot be prior to receiving a formal Grant Offer Letter - refer to process flowchart for indicative timescales but you should allow approximately 6-12 [TBC] weeks for the assessment and decision process." /></b>
+                                            </label>
+                                            <input type="date" class="form-control" id="planned_start_date" required="required" name="planned_start_date"/>
+                                            <span style="color:red;" class="d-none error previous_start_date_error">
+                                                Planned Start date must be a future date.
+                                            </span>
+                                            <span style="color:red;" class="d-none future_date_error"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="planned_end_date">
+                                                <b>Planned End Date <i class="fa fa-info-circle" title="When do you expect the funded project activity to financially complete? This means all items purchased,  received and installed and prior to the submission of the final claim. This can't be after 31/12/2025."/></b>
+                                            </label>
+                                            <input type="date" class="form-control" id="planned_end_date" required="required" name="planned_end_date"/>
+                                            <span style="color:red;" class="d-none error end_date_error">Planned End
+                                                Date must be after than Planned Start Date.
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class='sub_heading mt-4'>
+                                    <h5>
+                                        <b>Project Costs <i class="fa fa-info-circle" title="Please provide a Project cost breakdown."/></b>
+                                    </h5>
+                                </div>
+                                <div class='row ml-1' style="width:99%;">
+                                    <span class="text-muted">Please provide a Project cost breakdown.</span>
+                                    <div class="form-group col-12 show_total_project">
+                                        <div class="row s_col_no_resize s_col_no_bgcolor">
+                                            <table class="table table-bordered mt-3 total_project_costs">
+                                                <thead>
+                                                    <tr>
+                                                        <td>
+                                                            <strong>Expenditure Item*</strong>
+                                                        </td>
+                                                        <td>
+                                                            <strong>Cost *</strong>
+                                                        </td>
+                                                        <td width="5%"></td>
+                                                    </tr>
+                                                </thead>
+                                                <div class="collapse">
+                                                    <tbody>
+                                                        <tr class="project_cost_line">
+                                                            <td>
+                                                                <input required="True" type="text" class="form-control"
+                                                                       name="expenditure"
+                                                                       placeholder="Enter Expenditure Item"
+                                                                       id="expenditure"/>
+                                                            </td>
+                                                            <td>
+                                                                <div class="d-flex">
+                                                                       <span class="mt-2" style="margin-right: 0.5rem !important;"
+                                                                          t-esc="request.env.company.currency_id.symbol"/>
+
+                                                                <input required="True"
+                                                                       placeholder="Enter Project Cost" type="number"
+                                                                       class="form-control total_cost" name="total_cost"
+                                                                       id="total_cost"/>
+                                                                                                                                </div>
+
+                                                            </td>
+                                                            <td>
+                                                                <button class="btn fa fa-trash-o remove_line"
+                                                                        style="color: red; padding: 0px; margin-left: -6px; margin-top: 6px;"
+                                                                        name="delete"
+                                                                        aria-label="Delete row 1"></button>
+                                                            </td>
+                                                        </tr>
+
+
+                                                        <tr class="add_extra_project d-none">
+                                                            <td>
+                                                                <input type="text" class="form-control"
+                                                                       name="expenditure"
+                                                                       placeholder="Enter Expenditure Item"
+                                                                       id="expenditure"/>
+                                                            </td>
+                                                            <td>
+                                                                <div class="d-flex">
+                                                                    <span class="mt-2" style="margin-right: 0.5rem !important;"
+                                                                          t-esc="request.env.company.currency_id.symbol"/>
+                                                                    <input placeholder="Enter Project Cost"
+                                                                           type="number" class="form-control total_cost"
+                                                                           name="total_cost" id="total_cost"/>
+                                                                    <!--                                                                    <span style="display: block;" class="mt-2">£</span>-->
+                                                                </div>
+
+
+                                                            </td>
+                                                            <td>
+                                                                <button class="btn fa fa-trash-o remove_line"
+                                                                        style="color: red; padding: 0px; margin-left: -6px; margin-top: 6px;"
+                                                                        name="delete"
+                                                                        aria-label="Delete row 1"></button>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </div>
+                                            </table>
+                                        </div>
+                                        <textarea class="d-none" name="project_cost_ids">
+                                        </textarea>
+                                        <button type="button" class="btn btn-info add_total_project button-color"
+                                                style="float: right; margin-right: -15px;">
+                                            <i class="fa fa-plus"/>
+                                        </button>
+                                    </div>
+                                    <div class='col-lg-6'>
+                                        <div class="form-group tier_value_change">
+                                            <label for="total_grant_requested">
+                                                <b>Total Grant Requested <i class="fa fa-info-circle" title="How much grant are you seeking?"/></b>
+                                            </label>
+                                            <div class="d-flex">
+                                                <span class="mt-2" t-esc="request.env.company.currency_id.symbol"/>
+                                                <input type="number" required="required" class="form-control ml-3"
+                                                       id="total_grant_requested" name="total_grant_requested"/>
+                                            </div>
+                                            <div>
+                                                <div>
+                                                    <span style="color: red;" class="ml-4 d-none grant_req_error_message" />
+                                                </div>
+                                                <div>
+                                                    <span style="color: red;" class="ml-4 d-none error another_grant_req_error_message" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class='col-lg-6'>
+                                        <div class="form-group">
+                                            <label>
+                                                <b>Total Project Costs</b>
+                                            </label>
+                                            <input type="text" disabled="disabled" class="form-control" id="total_line_cost"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class='row mb-4 mt-4'>
+                                    <div class='col-lg-8'>
+                                        <div class="form-group">
+                                            <label for="is_previous_project" class="ml-2">Is this application linked to
+                                                any other project being developed or already approved?
+                                            </label>
+                                            <input class="is_previous_project ml-4" id="is_previous_project"
+                                                   name="is_previous_project" type="checkbox"/>
+                                        </div>
+                                        <!--                                <div class="form-group project d-none ml-2">-->
+                                        <!--                                    <label for="project"><b>ID of the Existing Project</b></label>-->
+                                        <!--                                    <input type="text" name="program" id="project_id" class="form-control"/>-->
+                                        <!--                                </div>-->
+                                        <!--                                <span style="color: red;" class="ml-2 d-none project_not_found_error">-->
+                                        <!--                                    Project Not Found!-->
+                                        <!--                                </span>-->
+                                    </div>
+                                    <div class='col-lg-4 project_details d-none'>
+                                        <!--                                <label for="project"><b>Project Details</b></label>-->
+                                        <!--                                <div class="form-group">-->
+                                        <!--                                    <textarea style="width:100%;" name="existing_project_details" rows="4" id="project_details"></textarea>-->
+                                        <!--                                </div>-->
+                                    </div>
+                                    <div class='col-lg-6 project_details d-none'>
+                                        <label for="project">
+                                            <b>Project Details <i class="fa fa-info-circle" title="This is an opportunity to explain in a bit more detail what you are seeking grant assistance for and how it will impact your business.  NB - if invited to submit a full application you will be required to expand on this further." /></b>
+                                        </label>
+                                        <div class="form-group">
+                                            <textarea style="width:100%;" name="existing_project_details" rows="4" id="project_details"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class='sub_heading strategic_objective d-none' style="background-color: #F9B000;">
+                                    <h5>
+                                        <b>Strategic Objectives <i class="fa fa-info-circle" title="Please tick all those which directly apply and briefly explain how it will contribute."/></b>
+                                    </h5>
+                                </div>
+                                <span style="color: red;" class="ml-1 d-none strategic_objective_error_message">
+                                    Please indicate which strategic objective(s) apply. You must select at least one
+                                    Objective.
+                                </span>
+                                <div class='row ml-1 d-none strategic_objective_table' style="width:99%;">
+                                    <div class="form-group col-12">
+                                        <div class="row s_col_no_resize s_col_no_bgcolor">
+                                            <table class="table table-bordered mt-3 strategic_objective_table">
+                                                <thead class="d-none">
+                                                    <tr>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class="add_extra_strategic d-none">
+                                                        <td style="width:48%;">
+                                                            <input type="text" class="form-control"
+                                                                   name="strategic_name" readonly="readonly"/>
+                                                        </td>
+                                                        <td style="width:4%;">
+                                                            <input type="checkbox" name="is_strategic" class="is_strategic" id="is_strategic"/>
+                                                        </td>
+                                                        <td style="width:48%;">
+                                                            <textarea disabled="disabled" placeholder="Please enter details (Max. 200 words)" class="form-control strategic_text z-depth-1"
+                                                                    name="strategic_text" id="strategic_text" rows="2"></textarea>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <textarea class="d-none" name="strategic_objective_ids">
+                                        </textarea>
+                                    </div>
+                                </div>
+                                <div class='sub_heading strategic_objective d-none' style="background-color: #F9B000;">
+                                    <h5>
+                                        <b>Headlines Output(s) <i class="fa fa-info-circle" title="Please tick all those which directly apply and briefly explain how it will contribute."/></b>
+                                    </h5>
+                                </div>
+                                <span style="color: red;" class="ml-1 d-none headline_outputs_error_message">
+                                    Please indicate which headline output(s) apply. You must select at least one
+                                    Objective.
+                                </span>
+                                <div class='row ml-1 d-none strategic_objective_table' style="width:70%;">
+                                    <div class="form-group col-12">
+                                        <div class="row s_col_no_resize s_col_no_bgcolor">
+                                            <table class="table table-bordered mt-3 headline_output_table">
+                                                <thead class="d-none">
+                                                    <tr>
+                                                        <th></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class="add_extra_headline d-none">
+                                                        <td style="width:39.5%;">
+                                                            <input type="text" class="form-control"
+                                                                   name="headline_name" readonly="readonly"/>
+                                                        </td>
+                                                        <td style="width:3.5%;">
+                                                            <input type="checkbox" name="is_headline" class="is_headline" id="is_headline"/>
+                                                        </td>
+                                                        <td style="width:15%;">
+                                                            <input disabled="disabled" type="number" class="form-control" name="headline_text" id="headline_text"/>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <textarea class="d-none" name="headline_outputs_ids">
+                                        </textarea>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="o_row">
+                                            <input class="mr-2" type="checkbox" required="required" id="is_authority_declaration" name="is_authority_declaration"/>
+                                            <label for="is_authority_declaration">
+                                                <!-- <a t-attf-href="/application/declaration/" target="_blank"></a> -->
+                                                I hereby declare that the above made statements are true to the best of my knowledge and
+                                                belief <i class="fa fa-info-circle" title="Please tick the box to confirm you have the authority to provide all information in relation to the project/business and to sign any future Grant Funding Agreement. If you are not the business/organisation owner, a director or shareholder then by making this declaration you are confirming that the business/organisation owner, directors or shareholders are aware of and endorse the application and have given you permission to act on their behalf."/>
+                                            </label>
+                                        </div>
+                                        <div>
+                                            <input class="mr-2" type="checkbox" required="required" id="is_privacy_notice" name="is_privacy_notice"/>
+                                            <label for="is_privacy_notice">
+                                                <a t-attf-href="/application/privacy/" target="_blank">Privacy Policy</a>
+                                                : By submitting this form I agree to the terms of the privacy policy
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='row mt-4'>
+                                    <div style="margin: auto;">
+                                        <button type="submit" class="btn btn-fill-primary d-none form_submit">Submit
+                                        </button>
+                                        <button type="button" class="btn btn-fill-primary application_submit">Submit
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

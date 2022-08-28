@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="cc_location_view_form" model="ir.ui.view">
+        <field name="name">cc.org.type.form</field>
+        <field name="model">cc.org.type</field>
+        <field name="arch" type="xml">
+            <form string="Organisation Type">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="cc_location_tree_form" model="ir.ui.view">
+        <field name="name">cc.org.type.view.tree</field>
+        <field name="model">cc.org.type</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_cc_org_type" model="ir.actions.act_window">
+        <field name="name">Organisation Type</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">cc.org.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create"></p>
+            <p></p>
+        </field>
+    </record>
+
+    <menuitem id="menu_cc_org_type" name="Organisation Types"
+              parent="menu_grant_configuration_submenu"
+              action="action_cc_org_type"/>
+
+</odoo>

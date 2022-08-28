@@ -1,0 +1,118 @@
+<odoo>
+    <data>
+
+        <record id="state_registration" model="grant.application.state">
+            <field name="name">Registration</field>
+            <field name="sequence">1</field>
+            <field name="fold" eval="True"/>
+        </record>
+
+        <record id="state_eoi" model="grant.application.state">
+            <field name="name">EOI</field>
+            <field name="sequence">2</field>
+        </record>
+
+        <record id="state_application" model="grant.application.state">
+            <field name="name">Application</field>
+            <field name="sequence">3</field>
+        </record>
+
+        <record id="state_appraisal" model="grant.application.state">
+            <field name="name">Appraisal</field>
+            <field name="sequence">4</field>
+        </record>
+
+        <record id="state_qc" model="grant.application.state">
+            <field name="name">QC</field>
+            <field name="sequence">5</field>
+        </record>
+
+        <record id="state_decision" model="grant.application.state">
+            <field name="name">Decision</field>
+            <field name="sequence">6</field>
+        </record>
+
+        <record id="state_offer" model="grant.application.state">
+            <field name="name">Offer</field>
+            <field name="sequence">7</field>
+        </record>
+
+        <record id="state_claims" model="grant.application.state">
+            <field name="name">Claims</field>
+            <field name="sequence">8</field>
+        </record>
+
+        <record id="state_close" model="grant.application.state">
+            <field name="name">Close</field>
+            <field name="sequence">9</field>
+            <field name="fold" eval="True"/>
+        </record>
+
+        <record id="state_rejected" model="grant.application.state">
+            <field name="name">Rejected</field>
+            <field name="sequence">10</field>
+            <field name="fold" eval="True"/>
+        </record>
+
+        <record id="section_application" model="website.section">
+            <field name="name">Application Process</field>
+        </record>
+
+        <record id="section_organisation" model="website.section">
+            <field name="name">Organisation Details</field>
+        </record>
+
+        <record id="section_contact" model="website.section">
+            <field name="name">Contact Details</field>
+        </record>
+
+        <record id="section_project" model="website.section">
+            <field name="name">Project Details</field>
+        </record>
+
+        <record id="section_project_options" model="website.section">
+            <field name="name">Project Options</field>
+        </record>
+
+        <record id="section_project_costs" model="website.section">
+            <field name="name">Project Costs</field>
+        </record>
+
+        <record id="section_funding" model="website.section">
+            <field name="name">Funding And Finance</field>
+        </record>
+
+        <record id="section_strategic_fit" model="website.section">
+            <field name="name">Strategic Fit</field>
+        </record>
+        
+        <record id="section_subsidy_control" model="website.section">
+            <field name="name">Subsidy Control</field>
+        </record>
+        
+        <record id="section_benefits" model="website.section">
+            <field name="name">Benefits and Impacts</field>
+        </record>
+        
+        <record id="section_permissions" model="website.section">
+            <field name="name">Permissions and Consent</field>
+        </record>
+        
+        <record id="section_deliverability" model="website.section">
+            <field name="name">Deliverability</field>
+        </record>
+        
+        <record id="section_risks" model="website.section">
+            <field name="name">Risks</field>
+        </record>
+        
+        <record id="section_timescales" model="website.section">
+            <field name="name">Time Scales</field>
+        </record>
+        
+        <record id="section_declaration_signature" model="website.section">
+            <field name="name">Declaration and Signature</field>
+        </record>
+
+    </data>
+</odoo>
