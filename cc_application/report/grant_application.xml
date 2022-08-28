@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="grant_application_report_template" model="ir.actions.report">
+        <field name="name">Grant Application</field>
+        <field name="model">grant.application</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">cc_application.repost_grant_application</field>
+        <field name="report_file">cc_application.repost_grant_application</field>
+        <field name="binding_model_id" ref="cc_application.model_grant_application"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="application_proceed" name="Application Declaration">
+        <t t-call="website.layout">
+            <div id="wrap">	
+                <div class="oe_structure">
+                    <div class="container">
+                     <section id='applicarion_sign_up_form_section'>
+                         <div style="margin-left: auto; margin-right: auto;">
+                             <div class='heading'>
+                                <h4>Application Not Submitted</h4>
+                            </div>
+                            <p class="text-center">
+                                The applicant pool was large and unfortunately, we are unable to fund all proposals at this time. Thank you for the time and effort you committed to submitting your application.
+                            </p>
+                        </div>
+                    </section>
+                    </div>
+                </div>
+            </div>
+        </t>
+	</template>
+
+</odoo>

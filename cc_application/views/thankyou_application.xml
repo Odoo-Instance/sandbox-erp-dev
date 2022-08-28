@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="thank_you_application" name="Thank You">
+        <t t-call="website.layout">
+            <div id="wrap">	
+                <div class="oe_structure">
+                    <div class='container' >
+                        <div class="col-lg-12 mt-lg-4">
+                            <h1 class="text-center">Congratulations!</h1>
+                            <p class="text-center">
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+	</template>
+
+</odoo>

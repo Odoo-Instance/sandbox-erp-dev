@@ -1,0 +1,701 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="grant_application_view_tree" model="ir.ui.view">
+        <field name="name">grant.application.tree</field>
+        <field name="model">grant.application</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="business_name"/>
+                <field name="project_description"/>
+                <field name="project_location"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="grant_application_view_form" model="ir.ui.view">
+        <field name="name">grant.application.form</field>
+        <field name="model">grant.application</field>
+        <field name="arch" type="xml">
+            <form string="alert form">
+                <header>
+                    <button string="Download EOI" class="oe_highlight"
+                            name="print_eoi_document" type="object"
+                            attrs="{'invisible': ['|', ('is_eoi', '=', False), ('is_all_checked', '=', False)]}"/>
+                    <button string="Portal Invitation" class="oe_highlight"
+                            name="create_portal_user" type="object"
+                            attrs="{'invisible': ['|', '|', ('is_eoi', '=', False), ('board_decision_type', '!=', 'POSITIVE'), ('user_id', '!=', False)]}"/>
+                    <button string="Send Rejection" class="oe_highlight"
+                            name="action_rejection" type="object"
+                            attrs="{'invisible': ['|', ('is_eoi', '=', False), ('board_decision_type', '!=', 'NEGATIVE')]}"/>
+                    <button string="Send Email More Info" class="oe_highlight"
+                            name="action_more_info" type="object"
+                            attrs="{'invisible': ['|', ('is_eoi', '=', False), ('board_decision_type', '!=', 'MORE INFO')]}"/>
+                    <button string="Send EOI Rejection" class="oe_highlight"
+                            name="action_eoi_failed"
+                            attrs="{'invisible': ['|', ('is_eoi', '=', False), ('is_all_checked', '=', True)]}"
+                            type="object"/>
+                    <field name="stage_id" widget="statusbar"
+                           clickable="False"/>
+                    <field name="is_eoi" invisible="1"/>
+                </header>
+                <sheet>
+
+                    <field name="active" invisible="1"/>
+                    <widget name="web_ribbon" title="Archived"
+                            bg_color="bg-danger"
+                            attrs="{'invisible': [('active', '=', True)]}"/>
+
+                    <div class="oe_title" name="title">
+                        <h1>
+                            <field name="name"/>
+                            <field name="user_id" invisible="1"/>
+                        </h1>
+                        <h2>
+                            <field name="business_name"
+                                   placeholder="Business Name"/>
+                        </h2>
+                    </div>
+                    <group string="PROJECT INFO">
+                        <group>
+                            <field name="project_name"/>
+                            <field name="project_description"/>
+                        </group>
+                        <group>
+                            <label for="street" string="Address"/>
+                            <div class="o_address_format">
+                                <field name="street" class="o_address_street"
+                                       placeholder="Street..."/>
+                                <field name="street2" class="o_address_street"
+                                       placeholder="Street2..."/>
+                                <field name="city" class="o_address_city"
+                                       placeholder="City"/>
+                                <field name="state_id" class="o_address_state"
+                                       domain="[('country_id', '=', country_id)]"
+                                       required="1" placeholder="County"
+                                       options="{'no_open': True}"/>
+                                <field name="zip" class="o_address_zip"
+                                       placeholder="Post Code"/>
+                                <field name="country_id"
+                                       class="o_address_country"
+                                       placeholder="Country"
+                                       options="{'no_open': True, 'no_create': True}"
+                                       required="1"/>
+                            </div>
+                        </group>
+
+                    </group>
+                    <group class="mt-4">
+                        <field name="company_id" invisible="1"/>
+                        <field name="currency_id" invisible="1"/>
+
+                        <group>
+                            <field name="grant_types_id"
+                                   options="{'no_create': True, 'no_edit': True}"/>
+                            <field name="location_ids" invisible="1"/>
+                            <field name="project_location"
+                                   placeholder="Post Code"
+                                   options="{'no_create': True, 'no_edit': True}"/>
+                        </group>
+                        <group>
+                            <field name="tier"/>
+                            <field name="round_id"
+                                   options="{'no_create': True, 'no_edit': True, 'no_open': True}"/>
+                        </group>
+                    </group>
+                    <group class="mt-5">
+                        <group>
+                            <field name="total_grant_requested"
+                                   widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"/>
+                            <field name="total_project_cost" widget="monetary"
+                                   options="{'currency_field': 'currency_id'}"/>
+                        </group>
+                        <group>
+                            <field name="planned_start_date"/>
+                            <field name="planned_end_date"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="is_previous_project"/>
+                            <!--                            <field name="program"-->
+                            <!--                                   attrs="{'invisible': [('is_previous_project', '=', False)], 'required': [('is_previous_project', '=', True)]}"/>-->
+                            <field name="existing_project_details"
+                                   attrs="{'invisible': [('is_previous_project', '=', False)]}"/>
+                        </group>
+                    </group>
+                    <group string="CONTACT INFO">
+                        <group>
+                            <field name="your_name"/>
+                            <field name="position"/>
+                            <field name="secondary_contact_name"
+                                   string="Assistant Name"/>
+                        </group>
+                        <group>
+                            <field name="email" widget="email"/>
+                            <field name="phone"/>
+                            <field name="is_all_checked" invisible="1"/>
+                            <field name="alter_phone" string="Assistant Phone"/>
+                        </group>
+                    </group>
+                    <notebook class='custom-class'>
+                        <page string="EOI"
+                              attrs="{'invisible':[('tier','!=','Tier 3')]}">
+                            <group class="eoi_fields">
+                                <field name="is_business_exist"
+                                       widget="boolean_toggle"/>
+                                <field name="is_location_eligible"
+                                       widget="boolean_toggle"/>
+                                <field name="is_cost_broadly_eligible"
+                                       widget="boolean_toggle"/>
+                                <field name="is_eligible_limit"
+                                       widget="boolean_toggle"/>
+                                <field name="is_description_clear"
+                                       widget="boolean_toggle"/>
+                                <field name="is_timesheet_real"
+                                       widget="boolean_toggle"/>
+                                <field name="is_strategic_fit_score"
+                                       widget="boolean_toggle"/>
+                                <field name="is_initial_vfm"
+                                       widget="boolean_toggle"/>
+                            </group>
+
+                            <group class="mt-5">
+                                <group>
+                                    <field name="eoi_score"/>
+                                </group>
+                            </group>
+                            <group class="eoi_fields">
+                                <group>
+                                    <field name="board_decision_first_date"/>
+                                    <field name="board_decision_type"/>
+                                    <field name="eoi_acceptance_note"
+                                           string="CC Conditions"
+                                           attrs="{'invisible': [('board_decision_type', '!=', 'Approved')]}"/>
+                                    <field name="eoi_fail_note"
+                                           string="EOI Failed Note"
+                                           attrs="{'invisible': [('board_decision_type', '!=', 'Rejected')]}"/>
+                                </group>
+                                <group>
+                                    <field name="board_decision_second_date"/>
+                                    <field name="board_decision_type_second"/>
+                                    <field name="eoi_fail_note_second"
+                                           string="EOI Failed Note"
+                                           attrs="{'invisible': [('board_decision_type_second', '!=', 'Approved')]}"/>
+                                    <field name="eoi_acceptance_note_second"
+                                           string="CC Conditions"
+                                           attrs="{'invisible': [('board_decision_type_second', '!=', 'Rejected')]}"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Organisation Details">
+                            <group string="General Info">
+
+                                <group>
+                                    <field name="org_name" string="Name"/>
+                                    <field name="org_type" string="Sector"/>
+                                    <field name="org_type_detail"
+                                           string="The sector of your Business(other)"/>
+                                </group>
+                                <group>
+                                    <field name="org_website" string="Website"/>
+                                    <field name="org_size"
+                                           string="Business Size"/>
+                                    <!--                                    <field name="org_start_date"-->
+                                    <!--                                           string="Start Date"/>-->
+                                </group>
+                            </group>
+
+
+                            <group>
+                                <group name="address_details">
+                                    <label for="street" string="Address"/>
+                                    <div class="o_address_format">
+                                        <field name="street"
+                                               placeholder="Street..."
+                                               class="o_address_street"/>
+                                        <field name="street2"
+                                               placeholder="Street 2..."
+                                               class="o_address_street"/>
+                                        <field name="city" placeholder="City"
+                                               class="o_address_city"/>
+                                        <field name="state_id"
+                                               class="o_address_state"
+                                               placeholder="State"
+                                               options='{"no_open": True}'/>
+                                        <field name="zip" placeholder="ZIP"
+                                               class="o_address_zip"/>
+                                        <field name="country_id"
+                                               placeholder="Country"
+                                               class="o_address_country"
+                                               options='{"no_open": True, "no_create": True}'/>
+                                    </div>
+                                    <field name="alternative_address_sel"
+                                           string="Alternative business address?"/>
+                                </group>
+                                <group name="address_details2" attrs="{'invisible': [('alternative_address_sel', '=', False)]}">
+
+                                    <label for="street" string="Alternative Address"/>
+                                    <div class="o_address_format">
+                                        <field name="alternative_street"
+                                               placeholder="Street."
+                                               class="o_address_street"/>
+                                        <field name="alternative_street2"
+                                               placeholder="Street 2..."
+                                               class="o_address_street"/>
+                                        <field name="alternative_city" placeholder="City"
+                                               class="o_address_city"/>
+                                        <field name="alternative_state_id"
+                                               class="o_address_state"
+                                               placeholder="State"
+                                               options='{"no_open": True}'/>
+                                        <field name="alternative_zip" placeholder="ZIP"
+                                               class="o_address_zip"/>
+                                        <field name="alternative_country_id"
+                                               placeholder="Country"
+                                               class="o_address_country"
+                                               options='{"no_open": True, "no_create": True}'/>
+                                    </div>
+                                </group>
+                            </group>
+
+
+                            <group string="Legal Info">
+                                <group>
+                                    <field name="org_start_date"
+                                           string="Business Start Date"/>
+
+                                    <field name="org_legal_status"
+                                           string="Status"/>
+                                    <field name="org_utr"
+                                           string="Unique Tax Reference Number (UTR)"
+                                           attrs="{'invisible': [('org_legal_status', 'not in', ['sole_trader', 'partnership'])]}"/>
+
+                                    <field name="org_house_no"
+                                           string="Companies House Registration Number"
+                                           attrs="{'invisible': [('org_legal_status', 'not in', ['limited_liability_partnership', 'company_ltd_by_shares','community_interest_company','registered_charity','company_ltd_by_guarantee'])]}"/>
+                                    <field name="org_legal_about"
+                                           string="Details of Legal Status"
+                                           attrs="{'invisible': [('org_legal_status', 'not in', ['other'])]}"/>
+                                </group>
+                                <group>
+                                    <field name="sic_code"
+                                           string="SIC Code"/>
+                                    <field name="credit_check"
+                                           string="Upload Credit Check Document"
+                                           widget="binary"
+                                           attrs="{'invisible': [('org_legal_status', 'not in', ['sole_trader', 'partnership'])]}"/>
+
+                                    <field name="org_charity_no"
+                                           attrs="{'invisible': [('org_legal_status', 'not in', ['registered_charity'])]}"
+                                           string="Charity Commission Registration Number"/>
+                                </group>
+                            </group>
+
+
+                            <group string="Tax Info">
+                                <group>
+                                    <field name="org_vat" string="Is Your Business VAT
+                        Registered?"/>
+                                    <field name="vat_reg_no"
+                                           attrs="{'invisible': [('org_vat', '!=', True)]}"
+                                           string="Vat Register No"/>
+                                </group>
+                                <group>
+
+                                    <field name="org_net_or_cost"
+                                           string="Are you applying for gross or net costs?"/>
+                                    <field name="org_gross_about"
+                                           string="Eligibility to claim gross costs?"
+                                           attrs="{'invisible': [('org_net_or_cost', 'not in', ['gross'])]}"
+                                           placeholder="Please explain why you are eligibility to claim gross costs?"/>
+                                </group>
+                            </group>
+
+
+                            <group string="Employees Info">
+                                <group>
+                                    <field name="fte_count"
+                                           string="FTE deployed by business/organisation"/>
+                                </group>
+                            </group>
+
+                            <group>
+                                <group>
+                                    <p>Categories Based on Gender</p>
+                                    <field name="employee_male" string="Male"/>
+                                    <field name="employee_female"
+                                           string="Female"/>
+                                    <field name="employee_gender_not_to_say"
+                                           string="Not Prefer to Say"/>
+                                </group>
+                                <group>
+                                    <p>Categories Based on Disabilities</p>
+                                    <field name="employee_disable"
+                                           string="Have Disabilities"/>
+                                    <field name="employee_not_disable"
+                                           string="Not disable"/>
+                                    <field name="employee_disability_not_to_say"
+                                           string="Prefer to Say"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group>
+                                    <p>Categories Based on Age</p>
+                                    <field name="employee_16_24"
+                                           string="Between 16-24"/>
+                                    <field name="employee_25_29"
+                                           string="Between 25-29"/>
+                                    <field name="employee_30_34"
+                                           string="Between 30-34"/>
+                                    <field name="employee_35_39"
+                                           string="Between 35-39"/>
+                                    <field name="employee_40_45"
+                                           string="Between 40-45"/>
+                                    <field name="employee_45_49"
+                                           string="Between 45-49"/>
+                                    <field name="employee_50_54"
+                                           string="Between 50-54"/>
+                                    <field name="employee_55_59"
+                                           string="Between 55-59"/>
+                                    <field name="employee_60_64"
+                                           string="Between 60-64"/>
+                                    <field name="employee_65"
+                                           string="Above 65"/>
+                                    <field name="employee_age_not_to_say"
+                                           string="Not Prefer to Say"/>
+                                </group>
+                                <group>
+                                    <p>Categories Based on Ethnic Groups</p>
+                                    <field name="employee_white"
+                                           string="White"/>
+                                    <field name="employee_mixed"
+                                           string="Mixed"/>
+                                    <field name="employee_multiple_ethnic_groups"
+                                           string="Multiple Ethnic Groups"/>
+                                    <field name="employee_asian_british"
+                                           string="Asian British"/>
+                                    <field name="employee_asian"
+                                           string="Asian"/>
+                                    <field name="employee_black"
+                                           string="Black"/>
+                                    <field name="employee_african"
+                                           string="African"/>
+                                    <field name="employee_caribbean"
+                                           string="Caribbean"/>
+                                    <field name="employee_black_british"
+                                           string="Black British"/>
+                                    <field name="employee_other_ethnic_group"
+                                           string="Other Ethnic"/>
+                                    <field name="employee_cat_not_to_say"
+                                           string="Not Prefer to Say"/>
+                                </group>
+                            </group>
+
+                            <!--                            <group string="Shares and Share Holders Info">-->
+
+                            <!--                            </group>-->
+
+
+                            <group string="Other Info">
+                                <field name="org_about"
+                                       string="About your Business"/>
+                            </group>
+                            <group string="Shareholders Info">
+                                <field name="share_holder_ids">
+                                    <tree editable="bottom">
+                                        <field name="share_holder_name"/>
+                                        <field name="share_in_percentage"/>
+                                        <field name="comment"/>
+                                    </tree>
+                                </field>
+                            </group>
+                            <group string="Business/Organisation Share Details">
+                                <field name="business_share_details_ids">
+                                    <tree editable="bottom">
+                                        <field name="share_holder_name"/>
+                                        <field name="company_reg_no"/>
+                                        <field name="share_in_percentage"/>
+                                        <field name="no_of_employees"/>
+                                        <field name="comment"/>
+                                    </tree>
+                                </field>
+                            </group>
+
+                            <group string="Shareholder share Details">
+                                <field name="share_holder_details_ids">
+                                    <tree editable="bottom">
+                                        <field name="share_holder_name"/>
+                                        <field name="company_reg_no"/>
+                                        <field name="share_in_percentage"/>
+                                        <field name="no_of_employees"/>
+                                        <field name="comment"/>
+                                    </tree>
+                                </field>
+                            </group>
+
+
+                        </page>
+                        <page string="Project Details">
+                        </page>
+                        <page string="Project Options">
+                        </page>
+                        <page string="Strategic Fit">
+                            <field name="strategic_objective_ids" readonly="1">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="is_strategic" invisible="1"/>
+                                    <field name="strategic_text"
+                                           string="Description"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Headline Outputs">
+                            <field name="headline_outputs_ids" readonly="1">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="is_headline" invisible="1"/>
+                                    <field name="headline_text"
+                                           string="Description"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Project Costs">
+                            <field name="project_cost_ids">
+                                <tree editable="bottom">
+                                    <field name="company_id" invisible="1"/>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="expenditure" required="1"/>
+                                    <field name="total_cost" widget="monetary"
+                                           options="{'currency_field': 'currency_id'}"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Funding and Finance">
+                        </page>
+                        <page string="Subsidy Control">
+                        	<group>
+                        		<field name="is_other_funders"/>
+                        		<!-- <field name="provide_details"/> -->
+                        	</group>
+                            <group>
+                                <field name="subsidy_control_details_ids">
+                                    <tree editable="bottom">
+                                        <field name="funding_body"/>
+                                        <field name="timescale"/>
+                                        <field name="funding_required"/>
+                                        <field name="project_desc"/>
+                                        <field name="progress_update"/>
+                                    </tree>
+                                </field>
+                            </group>
+                        	<group>
+                        		<field name="subsidy_control_summary_info"/>
+                        	</group>
+                        	<group>
+                        		<field name="link_org"/>
+                        		<field name="link_org_funding_body"/>
+                        		<field name="link_org_activity"/>
+                        		<field name="link_org_date_grant"/>
+                        		<field name="link_org_currency"/>
+                        		<field name="state_aid_report"/>
+                        	</group>
+                        </page>
+                        <page string="Outputs">
+                        </page>
+                        <page string="Benefits and Impacts">
+                        	<group>
+                        		<field name="wider_benefits_impact"/>
+                        		<field name="reduction_local"/>
+                        		<field name="improve_local"/>
+                        		<field name="greater_capital"/>
+                        		<field name="higher_quality"/>
+                        		<field name="improve_pride"/>
+                        		<field name="penzance_reduction_local"/>
+                        		<field name="modern_local"/>
+                        		<field name="improve_local_connectivity"/>
+                        		<field name="penzance_greater_capital"/>
+                        		<field name="streetscape"/>
+                        		<field name="social_impact"/>
+                        		<field name="market_increase"/>
+                        		<field name="displacement_add_value"/>
+                        		<field name="ensure_benefits"/>
+                        		<field name="sustainability"/>
+                        	</group>
+                        </page>
+                        <page string="Permissions and Consent">
+                            <group>
+                                <field name="is_freehold_land"/>
+                                <field name="land_registry"/>
+                            </group>
+                            <group>
+                                <field name="is_freeholder_permission"/>
+                                <field name="letter_consent"/>
+                            </group>
+                            <group>
+                                <field name="is_plan_permission"/>
+                                <field name="plan_permission"/>
+                            </group>
+                            <group>
+                                <field name="is_build_regulation"/>
+                                <field name="build_regulation"/>
+                            </group>
+                            <group>
+                                <field name="other_permission"/>
+                                <field name="other_permission_attach"/>
+                            </group>
+                        </page>
+                        <page string="Deliverability">
+                        	<group>
+                        		<field name="deliverability_summary"/>
+                        		<field name="deliverability_process"/>
+                        		<field name="deliverability_manage"/>
+                        		<field name="deliverability_experience"/>
+                        		<field name="is_prev_funding"/>
+                        	</group>
+                        </page>
+                        <page string="Risks">
+                        	<group>
+                        		<field name="risk_ids">
+                        			<tree string="Risks" editable="bottom">
+                        				<field name="name"/>
+                        				<field name="likelihood"/>
+                        				<field name="impact_severity"/>
+                        				<field name="impact_description"/>
+                        				<field name="mitigation"/>
+                        			</tree>
+                        		</field>
+                        	</group>
+                        </page>
+                        <page string="Timescales">
+                        	<group>
+                        		<field name="milestone_ids">
+                        			<tree string="Milestones" editable="bottom">
+                        				<field name="milestone_name"/>
+                        				<field name="milestone_date"/>
+                        				<field name="practical_completion"/>
+                        				<field name="practical_date"/>
+                        			</tree>
+                        		</field>
+                        	</group>
+                        	<group>
+                        		<field name="is_time_critical"/>
+                        		<field name="time_critical"/>
+                        	</group>
+                        </page>
+                        <page string="Declaration and Signatures">
+                        	<group>
+                        		<group>
+                        			<field name="is_dq_director"/>
+                        			<field name="dq_director_desc"/>
+                        			<field name="is_listed"/>
+                        			<field name="listed_desc"/>
+                        		</group>
+                        		<group>
+                        			<field name="is_subject_bankruptcy"/>
+                        			<field name="subject_bankruptcy_desc"/>
+                        			<field name="is_subject_county"/>
+                        			<field name="subject_county_desc"/>
+                        		</group>
+                        	</group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_grant_application_kanban">
+        <field name="name">grant.application.kanban</field>
+        <field name="model">grant.application</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id">
+                <field name="stage_id"
+                       options='{"group_by_tooltip": {"description": "Description"}}'/>
+                <field name="name"/>
+                <field name="business_name"/>
+                <field name="tier"/>
+                <field name="currency_id" invisible="1"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_content oe_kanban_global_click">
+                            <div class="row">
+                                <div class="col-12">
+                                    <strong>
+                                        <field name="name"/>
+                                    </strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <span>Project Name:
+                                        <field name="project_name"/>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <span>Business Name:
+                                        <field name="business_name"/>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row">
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <span>Total Grant Requested:
+                                        <field name="total_grant_requested"
+                                               widget="monetary" digits="[12,6]"
+                                               options="{'currency_field': 'currency_id'}"/>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_grant_application_filter" model="ir.ui.view">
+        <field name="name">grant.application.select</field>
+        <field name="model">grant.application</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter string="Archived" name="inactive"
+                        domain="[('active', '=', False)]"/>
+                <field name="stage_id" string="Status"/>
+                <group col="8" colspan="4" expand="0" string="Group By">
+                    <filter string="Stage" name="groupby_state"
+                            context="{'group_by':'stage_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_grant_application" model="ir.actions.act_window">
+        <field name="name">Applications</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">grant.application</field>
+        <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+    <menuitem id="menu_grant_application"
+              name="GMS"
+              sequence="01"
+              web_icon="cc_application,static/description/icon.png"/>
+
+    <menuitem id="menu_grant_application_submenu" name="Applications"
+              sequence="1"
+              parent="menu_grant_application"
+              action="action_grant_application"/>
+
+</odoo>
