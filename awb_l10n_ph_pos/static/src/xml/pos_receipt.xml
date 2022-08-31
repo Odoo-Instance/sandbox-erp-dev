@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="OrderReceipt" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('before-footer')]" position="after">
+            <t t-call="OrderReceiptPosProvider"/>
+        </xpath>
+    </t>
+
+    <t t-name="OrderReceiptPosProvider" owl="1">
+        <div style="text-align:center; font-size:75%; margin-top:10mm;">
+            <div>
+                POS Provider
+            </div>
+            <div t-if='env.pos.company.awb_pos_provider_id'>
+                <t t-esc="env.pos.company.awb_pos_provider_id[1]" />
+            </div>
+            <div t-if='env.pos.company.awb_pos_provider_display_address'>
+                <t t-esc="env.pos.company.awb_pos_provider_display_address" />
+            </div>
+            <div t-if='env.pos.company.awb_pos_provider_tin'>
+                TIN: <t t-esc="env.pos.company.awb_pos_provider_tin" />
+            </div>
+            <div t-if='env.pos.company.awb_pos_provider_accreditation_no'>
+                Accreditation No.: <t t-esc="env.pos.company.awb_pos_provider_accreditation_no" />
+            </div>
+            <div t-if='env.pos.company.awb_pos_provider_display_date'>
+                Date Issued: <t t-esc="env.pos.company.awb_pos_provider_display_date" />
+            </div>
+            <div t-if='env.pos.company.awb_pos_provider_display_valid_until'>
+                Valid Until: <t t-esc="env.pos.company.awb_pos_provider_display_valid_until" />
+            </div>
+            <div t-if='env.pos.company.awb_pos_provider_ptu'>
+                PTU No.: <t t-esc="env.pos.company.awb_pos_provider_ptu" />
+            </div>
+            <div t-if='env.pos.company.awb_pos_provider_remarks' style="margin-top:5mm;">
+                <t t-esc="env.pos.company.awb_pos_provider_remarks" />
+            </div>
+        </div>
+    </t>
+</templates>
