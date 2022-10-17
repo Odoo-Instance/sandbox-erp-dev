@@ -15,10 +15,13 @@
     # Check https://github.com/odoo/odoo/blob/13.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'Localization',
-    'version': '15.0.0.1',
+    'version': '15.0.7.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['point_of_sale'],
+    'depends': [
+        'point_of_sale',
+        'product'
+    ],
 
     # always loaded
     'data': [
@@ -31,6 +34,7 @@
         ],
         'web.assets_backend': [
             'awb_l10n_ph_pos/static/src/js/pos_receipt.js',
+            'awb_l10n_ph_pos/static/src/js/models.js',
         ],
     },
 }
