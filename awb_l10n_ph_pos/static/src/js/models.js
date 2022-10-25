@@ -186,14 +186,14 @@ odoo.define('awb_l10n_ph_pos.models', function (require) {
             for (var i = 0; i < orderlines.length; i++) {
                 var orderline = orderlines[i][2];
                 if (this.pos.db.get_product_by_id(orderline.product_id)) {
-                    this.add_orderline(new exports.Orderline({}, { pos: this.pos, order: this, json: orderline }));
+                    this.add_orderline(new models.Orderline({}, { pos: this.pos, order: this, json: orderline }));
                 }
             }
 
             var paymentlines = json.statement_ids;
             for (var i = 0; i < paymentlines.length; i++) {
                 var paymentline = paymentlines[i][2];
-                var newpaymentline = new exports.Paymentline({}, { pos: this.pos, order: this, json: paymentline });
+                var newpaymentline = new models.Paymentline({}, { pos: this.pos, order: this, json: paymentline });
                 this.paymentlines.add(newpaymentline);
 
                 if (i === paymentlines.length - 1) {
