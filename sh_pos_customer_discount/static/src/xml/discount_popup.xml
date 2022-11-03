@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+   <t t-name="DiscountPopup" owl="1">
+       <div role="dialog" class="modal-dialog">
+           <div class="popup" style="background-color: #7bcedb">
+               <p class="title">
+                   <t t-esc="props.title" />
+               </p>
+               <span class="body">
+
+                   <div>
+                        <input type="text" value="20" name="discount" t-on-change="captureChange"/> %
+                   </div>
+
+               </span>
+               <footer class="footer">
+                    <div class="button highlight confirm" t-on-click="confirm">
+                        Apply
+                    </div>
+                    <div class="button cancel" t-on-click="cancel">
+                        Cancel
+                    </div>
+                </footer>
+
+           </div>
+       </div>
+   </t>
+</templates>
