@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from odoo import fields, models
+from odoo import fields, models, api, _
+from odoo.exceptions import UserError
 
 
 class CrmTeam(models.Model):
@@ -9,16 +10,13 @@ class CrmTeam(models.Model):
 
     starting_sequence_number = fields.Integer(string='Starting Sequence number')
     current_sequence_number = fields.Integer(string='Current Sequence number')
-    ending_sequence_number = fields.Integer(string='Ending Sequence number')
-    sales_team_prefix = fields.Char(string='Sales Team Prefix for sequence', size=3)
+    ending_sequence_number = fields.Integer(string='Ending Sequence number', store=True)
     threshold_sequence_number = fields.Integer(string='Threshold Sequence number')
+    sale_team_prefix_id = fields.Many2one(string="Sale Team Prefix", comodel_name='sale.team.prefix', copy=False)
 
-    _sql_constraints = [
-    ('sales_team_prefix_uniq', 'unique (sales_team_prefix)',
-        " A sales team already exists with same prefix. Please choose another prefix.")
-    ]
-    
-
-
-
+    @api.onchange('ending_sequence_number')
+    def onchange_ending_sequence_number(self):
+        for record in self:
+            if record.ending_sequence_number < record.current_sequence_number:
+                raise UserError(_('Ending sequence number should be greater than current sequence number.'))
 

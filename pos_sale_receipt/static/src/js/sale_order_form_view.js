@@ -5,7 +5,6 @@ odoo.define('pos_sale_receipt.FormView', function (require) {
     var ExtendFormController = FormController.include({
          _saveRecord: function () {
             if(this.modelName == 'sale.order'){
-                debugger;
                 var record = this.model.get(this.handle, {raw: true});
                 var team_id = record["data"]["team_id"]
                 var show_warning = record["data"]["show_warning"]
@@ -16,7 +15,7 @@ odoo.define('pos_sale_receipt.FormView', function (require) {
             }
             return this._super.apply(this, arguments);
         },
-        
+
     });
 });
     

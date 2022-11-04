@@ -26,10 +26,14 @@ class PosOrder(models.Model):
             res['send_warning'] = True
             res['remaining_sequence_number'] = crm_team_record.ending_sequence_number - crm_team_record.current_sequence_number
         if crm_team_record.ending_sequence_number <= crm_team_record.current_sequence_number:
-            raise ValidationError(_('Receipt number exceed threshold sequence number.'))
+            raise ValidationError(_('Receipt number reached threshold sequence number.'))
         if crm_team_record:
-            if crm_team_record.sales_team_prefix and crm_team_record.ending_sequence_number > crm_team_record.current_sequence_number and res['increase_sequence']:
-                res['increase_sequence'] = False               
+            if crm_team_record.sale_team_prefix_id and crm_team_record.ending_sequence_number > crm_team_record.current_sequence_number and res['increase_sequence']:
+                res['increase_sequence'] = False        
                 crm_team_record.current_sequence_number += 1
-                res['pos_reference'] = crm_team_record.sales_team_prefix +str(crm_team_record.current_sequence_number)
+                current_sequence_number_with_format = str(crm_team_record.current_sequence_number).zfill(5)
+                if crm_team_record.ending_sequence_number > pow(9,6):
+                    length_of_ending_sequence_number = len(str(crm_team_record.ending_sequence_number))
+                    current_sequence_number_with_format = str(crm_team_record.current_sequence_number).zfill(length_of_ending_sequence_number)
+                res['pos_reference'] = crm_team_record.sale_team_prefix_id.name + ' ' + str(current_sequence_number_with_format)
         return res

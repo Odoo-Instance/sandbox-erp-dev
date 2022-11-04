@@ -21,11 +21,15 @@ class SaleOrder(models.Model):
         crm_team_record =  self.env['crm.team'].search([('id', '=', vals['team_id'])])
         if crm_team_record:
             if crm_team_record.ending_sequence_number <= crm_team_record.current_sequence_number:
-                raise ValidationError(_('Receipt number exceed threshold sequence number.'))
-            if crm_team_record.sales_team_prefix:
+                raise ValidationError(_('Receipt number reached threshold sequence number.'))
+            if crm_team_record.sale_team_prefix_id:
                 if crm_team_record.ending_sequence_number > crm_team_record.current_sequence_number:
                     crm_team_record.current_sequence_number += 1
-                    vals['sale_reference'] = crm_team_record.sales_team_prefix +str(crm_team_record.current_sequence_number)
+                    current_sequence_number_with_format = str(crm_team_record.current_sequence_number).zfill(5)
+                    if crm_team_record.ending_sequence_number > pow(9,6):
+                        length_of_ending_sequence_number = len(str(crm_team_record.ending_sequence_number))
+                        current_sequence_number_with_format = str(crm_team_record.current_sequence_number).zfill(length_of_ending_sequence_number)
+                    vals['sale_reference'] = crm_team_record.sale_team_prefix_id.name + ' ' + str(current_sequence_number_with_format)
                 if crm_team_record.threshold_sequence_number < crm_team_record.current_sequence_number:
                     vals['show_warning'] = True
             else:
@@ -43,3 +47,9 @@ class SaleOrder(models.Model):
                 return
         self.show_warning = False
         return
+
+    def _create_invoices(self, grouped=False, final=False, date=None):
+        moves = super()._create_invoices(grouped=grouped, final=final, date=date)
+        for move in moves:
+            move['sale_order_id'] = self.id
+        return moves

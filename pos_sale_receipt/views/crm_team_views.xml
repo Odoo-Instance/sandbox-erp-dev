@@ -8,7 +8,7 @@
           <field name="starting_sequence_number" />
           <field name="current_sequence_number" readonly="1"/>
           <field name="ending_sequence_number" />
-          <field name="sales_team_prefix" />
+          <field name="sale_team_prefix_id" />
           <field name="threshold_sequence_number" />
         </xpath>
       </field>

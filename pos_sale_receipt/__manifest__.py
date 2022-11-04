@@ -12,14 +12,16 @@
     'author': "Achieve Without Borders",
 
     'category': 'Localization',
-    'version': '15.0',
+    'version': '15.0.1',
 
     'depends': ['base', 'point_of_sale', 'sale_management'],
 
     'data': [
-        # 'wizard/sale_order_warning_views.xml',
+        'security/ir.model.access.csv',
+        'data/sale_team_prefix_data.xml',
         'views/crm_team_views.xml',
         'views/sale_order_views.xml',
+        'views/account_move_views.xml',
     ],
     'assets': {
         'web.assets_backend': [
