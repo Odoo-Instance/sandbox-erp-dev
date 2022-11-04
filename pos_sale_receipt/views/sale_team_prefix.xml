@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="sale_team_prefix_form" model="ir.ui.view">
+        <field name="name">sale.team.prefix.form</field>
+        <field name="model">sale.team.prefix</field>
+            <field name="arch" type="xml">
+                <form>
+                    <field name="name" />
+                </form>
+            </field>
+    </record>
+</odoo>
