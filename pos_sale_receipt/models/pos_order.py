@@ -31,7 +31,7 @@ class PosOrder(models.Model):
             if crm_team_record.sale_team_prefix_id and crm_team_record.ending_sequence_number > crm_team_record.current_sequence_number and res['increase_sequence']:
                 res['increase_sequence'] = False        
                 crm_team_record.current_sequence_number += 1
-                current_sequence_number_with_format = str(crm_team_record.current_sequence_number).zfill(5)
+                current_sequence_number_with_format = str(crm_team_record.current_sequence_number).zfill(6)
                 if crm_team_record.ending_sequence_number > pow(9,6):
                     length_of_ending_sequence_number = len(str(crm_team_record.ending_sequence_number))
                     current_sequence_number_with_format = str(crm_team_record.current_sequence_number).zfill(length_of_ending_sequence_number)
