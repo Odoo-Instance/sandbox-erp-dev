@@ -20,7 +20,7 @@
     # any module necessary for this one to work correctly
     'depends': [
         'point_of_sale',
-        'product'
+        'point_of_sale.models',
     ],
 
     # always loaded
