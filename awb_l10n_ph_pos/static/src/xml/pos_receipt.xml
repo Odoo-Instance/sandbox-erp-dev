@@ -206,7 +206,8 @@
                 x
                 <t t-esc="env.pos.format_currency(line.price)" />
                 <span class="price_display pos-receipt-right-align">
-                    <t t-esc="env.pos.format_currency_no_symbol(line.price_with_tax_before_discount)" />
+                    <t t-set="unit_price_before_tax" t-value="line.quantity * line.price"/>
+                    <t t-esc="env.pos.format_currency_no_symbol(unit_price_before_tax)" />
                 </span>
             </t>
             <t t-else="">
@@ -215,7 +216,8 @@
                 x
                 <t t-esc="env.pos.format_currency(line.price)" />
                 <span class="price_display pos-receipt-right-align">
-                    <t t-esc="env.pos.format_currency_no_symbol(line.price_with_tax_before_discount)" />
+                    <t t-set="unit_price_before_tax" t-value="line.quantity * line.price"/>
+                    <t t-esc="env.pos.format_currency_no_symbol(unit_price_before_tax)" />
                 </span>
             </t>
         </div>
@@ -227,7 +229,8 @@
             <t t-esc="line.discount" />
             %
             <div class="pos-receipt-right-align">
-                <t t-set="orderline_discount" t-value="(line.discount / 100 * line.price_with_tax_before_discount).toFixed(2)" />
+                <t t-set="unit_price_before_tax" t-value="line.quantity * line.price"/>
+                <t t-set="orderline_discount" t-value="(line.discount / 100 * unit_price_before_tax).toFixed(2)" />
                 <t t-esc="orderline_discount" />
             </div>
         </div>
