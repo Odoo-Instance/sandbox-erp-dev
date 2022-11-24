@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_void_order_reason" model="ir.ui.view">
+        <field name="name">void.order.reason.form</field>
+        <field name="model">void.order.reason</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="name" />
+            </form>
+        </field>
+    </record>
+
+    <record id="action_void_order_reason" model="ir.actions.act_window">
+        <field name="name">Void Order Reason</field>
+        <field name="res_model">void.order.reason</field>
+        <field name="view_mode">form</field>
+    </record>
+
+</odoo>
