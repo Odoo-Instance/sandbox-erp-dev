@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record id="view_company_form" model="ir.ui.view">
+            <field name="name">res.company.form</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="replace">
+                    <notebook>
+                        <page string="General Information" name="general_info">
+                            <group>
+                                <group>
+                                    <field name="partner_id" string="Contact" readonly="1" required="0" groups="base.group_no_one" />
+                                    <label for="street" string="Address" />
+                                    <div class="o_address_format">
+                                        <field name="street" placeholder="Street..." class="o_address_street" />
+                                        <field name="street2" placeholder="Street 2..." class="o_address_street" />
+                                        <field name="city" placeholder="City" class="o_address_city" />
+                                        <field name="state_id" class="o_address_state" placeholder="State" options='{"no_open": True}' />
+                                        <field name="zip" placeholder="ZIP" class="o_address_zip" />
+                                        <field name="country_id" placeholder="Country" class="o_address_country" options='{"no_open": True, "no_create": True}' />
+                                    </div>
+                                    <field name="taxpayer_is_vat_registered" string="Vat Registered" />
+                                    <field name="taxpayer_identification_number" string="TIN" />
+                                    <field name="taxpayer_remarks" string="Remarks" />
+                                    <field name="taxpayer_info" string="Taxpayer Info" invisible="1" />
+                                    <field name="vat" />
+                                    <field name="company_registry" />
+                                    <field name="currency_id" options="{'no_create': True, 'no_open': True}" id="company_currency" context="{'active_test': False}" />
+                                </group>
+                                <group>
+                                    <field name="phone" class="o_force_ltr" />
+                                    <field name="mobile" class="o_force_ltr" />
+                                    <field name="email" />
+                                    <field name="website" string="Website" widget="url" placeholder="e.g. https://www.odoo.com" />
+                                    <field name="parent_id" groups="base.group_multi_company" />
+                                    <field name="sequence" invisible="1" />
+                                    <field name="favicon" widget="image" class="float-left oe_avatar" groups="base.group_no_one" />
+                                </group>
+                                <group name="social_media" />
+                            </group>
+                        </page>
+                        <page name="awb_page_point_of_sale" string="Point of Sale">
+                            <group name="awb_group_pos_provider">
+                                <group name="awb_group_pos_provider_info" string="Provider Information">
+                                    <field name="awb_pos_provider_id" string="Name" />
+                                    <field name="awb_pos_provider_tin" string="TIN" />
+                                    <field name="awb_pos_provider_street" string="Street" />
+                                    <field name="awb_pos_provider_street2" string="Street 2" />
+                                    <field name="awb_pos_provider_state_id" string="State" />
+                                    <field name="awb_pos_provider_country_id" string="Country" />
+                                </group>
+                                <group name="awb_group_pos_provider_accreditation" string="Accreditation Details">
+                                    <field name="awb_pos_provider_accreditation_no" string="No." />
+                                    <field name="awb_pos_provider_date" string="Date" />
+                                    <field name="awb_pos_provider_valid_until" string="Valid Until" />
+                                    <field name="awb_pos_provider_ptu" string="PTU" />
+                                </group>
+                            </group>
+                            <group name="additional_info">
+                                <group name="awb_group_pos_provider_remarks" string="Other Information">
+                                    <field name="awb_pos_provider_is_training_mode" string="Training Mode" />
+                                    <field name="awb_pos_provider_remarks" string="Remarks" />
+                                </group>
+                                <group name="awb_group_pos_provider_machine" string="Machine Information">
+                                    <field name="taxpayer_min" string="MIN" />
+                                    <field name="taxpayer_machine_serial_number" string="Serial Number" />
+                                    <field name="taxpayer_receipt" string="Receipt/Invoice Type" />
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

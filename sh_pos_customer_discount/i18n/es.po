@@ -1,0 +1,56 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* sh_pos_customer_discount
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 15.1alpha1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-09-16 10:43+0000\n"
+"PO-Revision-Date: 2021-09-16 10:43+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: sh_pos_customer_discount
+#. openerp-web
+#: code:addons/sh_pos_customer_discount/static/src/js/pos.js:0
+#, python-format
+msgid "A Customer Name Is Required"
+msgstr "Se requiere un nombre al cliente"
+
+#. module: sh_pos_customer_discount
+#: model:ir.model,name:sh_pos_customer_discount.model_res_partner
+msgid "Contact"
+msgstr "Contacto"
+
+#. module: sh_pos_customer_discount
+#: model_terms:ir.ui.view,arch_db:sh_pos_customer_discount.sh_pos_customer_dicount_configuration
+msgid "Customer Discount"
+msgstr "Descuento del cliente"
+
+#. module: sh_pos_customer_discount
+#. openerp-web
+#: code:addons/sh_pos_customer_discount/static/src/xml/pos.xml:0
+#, python-format
+msgid "Discount"
+msgstr "Descuento"
+
+#. module: sh_pos_customer_discount
+#: model:ir.model.fields,field_description:sh_pos_customer_discount.field_pos_config__sh_enable_customer_discount
+msgid "Enable Customer Discount"
+msgstr "Habilitar el descuento del cliente"
+
+#. module: sh_pos_customer_discount
+#: model:ir.model.fields,field_description:sh_pos_customer_discount.field_res_partner__sh_customer_discount
+#: model:ir.model.fields,field_description:sh_pos_customer_discount.field_res_users__sh_customer_discount
+msgid "POS Discount"
+msgstr "DESCUENTO DE POS"
+
+#. module: sh_pos_customer_discount
+#: model:ir.model,name:sh_pos_customer_discount.model_pos_config
+msgid "Point of Sale Configuration"
+msgstr "Configuración de punto de venta"
