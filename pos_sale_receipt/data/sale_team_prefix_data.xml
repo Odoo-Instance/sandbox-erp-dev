@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sale_team_prefix_one" model="sale.team.prefix">
+        <field name="name">OR</field>
+    </record>
+
+    <record id="sale_team_prefix_two" model="sale.team.prefix">
+        <field name="name">SI</field>
+    </record>
+
+    <record id="sale_team_prefix_three" model="sale.team.prefix">
+        <field name="name">CI</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="OrderReceipt" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension" owl="1">
+        <xpath expr="//t[@t-if='receipt.company.logo'] | //t[@t-if='!receipt.company.logo']" position="replace">
+            <t t-call="OrderReceiptCompanyLogo" />
+        </xpath>
+        <xpath expr="//div[hasclass('pos-receipt-contact')]" position="replace">
+            <t t-call="OrderReceiptTaxpayer" />
+        </xpath>
+        <xpath expr="//t[@t-if='isTaxIncluded']" position="replace">
+            <t t-call="OrderReceiptTaxIncluded" />
+        </xpath>
+        <xpath expr="//t[@t-if='!isTaxIncluded']/t[@t-foreach='receipt.tax_details']" position="replace">
+            <t t-call="OrderReceiptNotTaxIncluded" />
+        </xpath>
+        <xpath expr="//div[hasclass('before-footer')]" position="after">
+            <t t-call="OrderReceiptPosProvider" />
+        </xpath>
+        <xpath expr="//div[hasclass('pos-receipt-order-data')]" position="after">
+            <t t-call="OrderReceiptFooter" />
+        </xpath>
+    </t>
+    <t t-name="OrderLinesReceipt" t-inherit="point_of_sale.OrderLinesReceipt" t-inherit-mode="extension" owl="1">
+        <xpath expr="//t[@t-elif='line.discount !== 0']/div[hasclass('pos-receipt-left-padding')]" position="replace">
+            <t t-call="OrderLinesReceiptBeforeDiscount" />
+        </xpath>
+        <xpath expr="//t[@t-if='line.discount !== 0']/div[hasclass('pos-receipt-left-padding')]" position="replace">
+            <t t-call="OrderLinesReceiptDiscount" />
+        </xpath>
+    </t>
+    <t t-name="OrderReceiptCompanyLogo" owl="1">
+        <div class="logo">
+            <t t-if="receipt.company.logo">
+                <img class="pos-receipt-logo" t-att-src="receipt.company.logo" alt="Logo" style="width: auto; height: 3em;" />
+                <br />
+            </t>
+            <t t-if="!receipt.company.logo">
+                <h2 class="pos-receipt-center-align">
+                    <t t-esc="receipt.company.name" />
+                </h2>
+                <br />
+            </t>
+        </div>
+    </t>
+
+    <t t-name="OrderReceiptTaxpayer" owl="1">
+        <div style="text-align:center; font-size:75%;">
+            <div class="taxpayer-info">
+                <div t-if='receipt.company.name'>
+                    <t t-esc="receipt.company.name" />
+                </div>
+
+                <div class="company-address">
+                    <div t-if='receipt.company.street'>
+                        <t t-esc="receipt.company.street" />
+                    </div>
+                    <div t-if='receipt.company.street2'>
+                        <t t-esc="receipt.company.street2" />
+                    </div>
+                    <div t-if='receipt.company.address_info'>
+                        <t t-esc="receipt.company.address_info" />
+                    </div>
+                    <div t-if='receipt.company.country'>
+                        <t t-esc="receipt.company.country" />
+                    </div>
+                </div>
+
+                <div t-if='env.pos.company.taxpayer_info'>
+                    <t t-esc="env.pos.company.taxpayer_info" />
+                </div>
+
+                <div t-if='env.pos.company.taxpayer_min'>
+                    MIN#:
+                    <t t-esc="env.pos.company.taxpayer_min" />
+                </div>
+                <div t-if='env.pos.company.taxpayer_machine_serial_number'>
+                    S/N:
+                    <t t-esc="env.pos.company.taxpayer_machine_serial_number" />
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="OrderReceiptTaxIncluded" owl="1">
+        <t t-if="isTaxIncluded">
+            <div t-if="env.pos.company.taxpayer_is_vat_registered">
+                <div class="zero-rated" style="border-top:1px dashed black; padding-top: 5mm; margin-top: 5mm;">
+                    Zero Rated Sales:
+                    <span t-esc="env.pos.format_currency(receipt.zero_rated)" class="pos-receipt-right-align" />
+                </div>
+                <div>
+                    VATable Sales:
+                    <span t-esc="env.pos.format_currency(receipt.vatable_sales)" class="pos-receipt-right-align" />
+                </div>
+                <div class="vatable">
+                    VAT Amount
+                    <span t-esc="env.pos.format_currency(receipt.vat_amount)" class="pos-receipt-right-align" />
+                </div>
+                <div class="vat-exempt">
+                    VAT Exempt Sales:
+                    <span t-esc="env.pos.format_currency(receipt.vat_exempt)" class="pos-receipt-right-align" />
+                </div>
+            </div>
+            <div t-else="">
+                <div style="border-top:1px dashed black; padding-top: 5mm; margin-top:5mm;">
+                    EXEMPT Sales:
+                    <!-- For now the exempt sales is equal to the subtotal(total without taxes).
+                    Please alter this later if there is an update regarding the computation -->
+                    <span t-esc="env.pos.format_currency(receipt.subtotal)" class="pos-receipt-right-align" />
+                </div>
+            </div>
+        </t>
+    </t>
+
+    <t t-name="OrderReceiptNotTaxIncluded" owl="1">
+        <div t-if="env.pos.company.taxpayer_is_vat_registered">
+            <div class="zero-rated" style="border-top:1px dashed black; padding-top: 5mm; margin-top: 5mm;">
+                Zero Rated Sales:
+                <span t-esc="env.pos.format_currency(receipt.zero_rated)" class="pos-receipt-right-align" />
+            </div>
+            <div>
+                VATable Sales:
+                <span t-esc="env.pos.format_currency(receipt.vatable_sales)" class="pos-receipt-right-align" />
+            </div>
+            <div class="vatable">
+                VAT Amount
+                <span t-esc="env.pos.format_currency(receipt.vat_amount)" class="pos-receipt-right-align" />
+            </div>
+            <div class="vat-exempt">
+                VAT Exempt Sales:
+                <span t-esc="env.pos.format_currency(receipt.vat_exempt)" class="pos-receipt-right-align" />
+            </div>
+        </div>
+        <div t-else="">
+            <div style="border-top:1px dashed black; padding-top: 5mm; margin-top:5mm;">
+                EXEMPT Sales:
+                <!-- For now the exempt sales is equal to the subtotal(total without taxes).
+                Please alter this later if there is an update regarding the computation -->
+                <span t-esc="env.pos.format_currency(receipt.subtotal)" class="pos-receipt-right-align" />
+            </div>
+        </div>
+    </t>
+
+    <t t-name="OrderReceiptPosProvider" owl="1">
+        <div style="text-align:center; font-size:75%; margin-top:10mm;">
+            <div class="buyer-info" style="text-align:justify; margin-bottom: 10mm;">
+                BUYERS NAME:___________________________________________
+                <br />
+                SC/PWD ID:_______________________________________________
+                <br />
+                ADDRESS:_________________________________________________
+                <br />
+                TIN #:______________________________________________________
+                <br />
+                BUS STYLE:________________________________________________
+                <br />
+            </div>
+            <div>
+                POS Provider
+            </div>
+            <div t-if='env.pos.company.awb_pos_provider_id'>
+                <t t-esc="env.pos.company.awb_pos_provider_id[1]" />
+            </div>
+            <div t-if='env.pos.company.awb_pos_provider_display_address'>
+                <t t-esc="env.pos.company.awb_pos_provider_display_address" />
+            </div>
+            <div t-if='env.pos.company.awb_pos_provider_tin'>
+                TIN:
+                <t t-esc="env.pos.company.awb_pos_provider_tin" />
+            </div>
+            <div t-if='env.pos.company.awb_pos_provider_accreditation_no'>
+                Accreditation No.:
+                <t t-esc="env.pos.company.awb_pos_provider_accreditation_no" />
+            </div>
+            <div t-if='env.pos.company.awb_pos_provider_display_date'>
+                Date Issued:
+                <t t-esc="env.pos.company.awb_pos_provider_display_date" />
+            </div>
+            <div t-if='env.pos.company.awb_pos_provider_display_valid_until'>
+                Valid Until:
+                <t t-esc="env.pos.company.awb_pos_provider_display_valid_until" />
+            </div>
+            <div t-if='env.pos.company.awb_pos_provider_ptu'>
+                PTU No.:
+                <t t-esc="env.pos.company.awb_pos_provider_ptu" />
+            </div>
+            <div t-if='env.pos.company.awb_pos_provider_remarks' style="margin-top:5mm;">
+                <t t-esc="env.pos.company.awb_pos_provider_remarks" />
+            </div>
+        </div>
+    </t>
+
+    <t t-name="OrderReceiptFooter" owl="1">
+        <div style="text-align:center; font-size:75%; margin-top:10mm; padding: 0mm 10mm;">
+            <div t-if="env.pos.company.taxpayer_remarks">
+                <t t-esc="env.pos.company.taxpayer_remarks" />
+            </div>
+        </div>
+    </t>
+
+    <t t-name="OrderLinesReceiptBeforeDiscount" owl="1">
+        <div class="pos-receipt-left-padding">
+            <t t-if="env.pos.config.iface_tax_included === 'total'">
+                <t t-esc="Math.round(line.quantity * Math.pow(10, env.pos.dp['Product Unit of Measure'])) / Math.pow(10, env.pos.dp['Product Unit of Measure'])" />
+                <t t-if="!line.is_in_unit" t-esc="line.unit_name" />
+                x
+                <t t-esc="env.pos.format_currency(line.price)" />
+                <span class="price_display pos-receipt-right-align">
+                    <t t-set="unit_price_before_tax" t-value="line.quantity * line.price"/>
+                    <t t-esc="env.pos.format_currency_no_symbol(unit_price_before_tax)" />
+                </span>
+            </t>
+            <t t-else="">
+                <t t-esc="Math.round(line.quantity * Math.pow(10, env.pos.dp['Product Unit of Measure'])) / Math.pow(10, env.pos.dp['Product Unit of Measure'])" />
+                <t t-if="!line.is_in_unit" t-esc="line.unit_name" />
+                x
+                <t t-esc="env.pos.format_currency(line.price)" />
+                <span class="price_display pos-receipt-right-align">
+                    <t t-set="unit_price_before_tax" t-value="line.quantity * line.price"/>
+                    <t t-esc="env.pos.format_currency_no_symbol(unit_price_before_tax)" />
+                </span>
+            </t>
+        </div>
+    </t>
+
+    <t t-name="OrderLinesReceiptDiscount" owl="1">
+        <div class="pos-receipt-left-padding">
+            Discount:
+            <t t-esc="line.discount" />
+            %
+            <div class="pos-receipt-right-align">
+                <t t-set="unit_price_before_tax" t-value="line.quantity * line.price"/>
+                <t t-set="orderline_discount" t-value="(line.discount / 100 * unit_price_before_tax).toFixed(2)" />
+                <t t-esc="orderline_discount" />
+            </div>
+        </div>
+    </t>
+
+</templates>
