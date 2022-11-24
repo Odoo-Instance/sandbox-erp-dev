@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pos_order_order_summary" model="ir.ui.view">
+        <field name="name">pos.order.summary.form.inherit</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='pos_reference']" position="after">
+                <field name="void_reason_ids" widget="many2many_tags" />
+                <field name="voided_order" readonly="1" />
+                <field name="number_of_item_sold" />
+                <field name="vatable_tax" />
+                <field name="vat_exempt" />
+                <field name="zero_rated" /> 
+            </xpath>
+            <xpath expr="//button[@name='refund']" position="after">
+                <button name="void_order" string="Void Order" type="object"
+                    groups="point_of_sale.group_pos_manager"
+                    attrs="{'invisible':[('state', '!=', 'invoiced'), ('voided_order', '=', True)]}" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_pos_order_summary_search" model="ir.ui.view">
+        <field name="name">pos.order.search.view</field>
+        <field name="model">pos.order</field>
+        <field name="arch" type="xml">
+            <search string="Point of Sale Orders">
+                <field name="name" />
+                <field name="config_id" />
+                <separator />
+                <filter string="Vatable Tax" name="vatable_tax" domain="[('vatable_tax', '!=', 0)]" />
+                <separator />
+            </search>
+        </field>
+    </record>
+
+    <record id="view_pos_order_tree_summary_form_inherit" model="ir.ui.view">
+        <field name="name">pos.order.tree.summary.inherit</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_order_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='amount_total']" position="replace" />
+            <xpath expr="//field[@name='pos_reference']" position="after">
+                <field name="number_of_item_sold" />
+                <field name="amount_total" />
+                <field name="vatable_tax" />
+                <field name="vat_exempt" />
+                <field name="zero_rated" />
+                <field name="amount_tax" />
+                <field name="discount" />
+                <field name="payment_methods" />
+            </xpath>
+            <xpath expr="//field[@name='amount_tax']" position="attributes">
+                <attribute name="string">Vat</attribute>
+            </xpath>            
+        </field>
+    </record>
+
+    <record id="action_report_pos_order_summary" model="ir.actions.act_window">
+        <field name="name">POS Order Summary</field>
+        <field name="res_model">pos.order</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_pos_order_tree_summary_form_inherit" />
+        <field name="search_view_id" ref="view_pos_order_summary_search" />
+        <field name="target">current</field>
+    </record>
+
+    <menuitem id="menu_report_pos_order_summary" name="Summary report" action="action_report_pos_order_summary" parent="sale.menu_sale_report" sequence="6" />
+</odoo>

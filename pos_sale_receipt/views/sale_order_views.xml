@@ -8,7 +8,6 @@
             <xpath expr="//field[@name='team_id']" position="after" >
                 <field name="show_warning" invisible="1" />
                 <field name="sale_reference" />
-                <field name="remaning_receipts_count" readonly="1" />
             </xpath>
         </field>
     </record>
