@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+cc_z_reading.access_cc_z_reading_z_reading,access_cc_z_reading_z_reading,cc_z_reading.model_cc_z_reading_z_reading,base.group_user,1,1,1,0

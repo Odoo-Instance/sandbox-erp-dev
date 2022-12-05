@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="z_reading_report_style">
+            <div class="header">
+                <div class="text-center" style="bottom-border: 2px solid black; font-size: 75%; line-height: 80%;">
+                    <t t-set="company" t-value="env.company" />
+                    <t t-foreach="company" t-as="c">
+                        <p t-esc="c['name']" />
+                        <p t-esc="c['street']" />
+                        <p t-esc="c['street2']" />
+                        <p t-esc="c['city']" />
+                        <p t-esc="c['taxpayer_info']" />
+                        <p>
+                            MIN#:
+                            <t t-esc="c['taxpayer_min']" />
+                        </p>
+                        <p>
+                            S/N:
+                            <!-- add the serial number from the pos_sale_receipt module -->
+                            <!-- <t t-esc="c['taxpayer_machine_serial_number']" /> -->
+                        </p>
+                    </t>
+                </div>
+            </div>
+            <div class="article">
+                <t t-out="0" />
+            </div>
+            <div class="footer o_standard_footer">
+                <div class="text-center" style="bottom-top: 2px solid black; font-size: 75%; line-height: 80%;">
+                    <p>
+                        <strong>
+                            <t t-esc="date_start" t-options="{'widget': 'datetime'}" />
+                            -
+                            <t t-esc="date_stop" t-options="{'widget': 'datetime'}" />
+                        </strong>
+                    </p>
+                    <p>
+                        POS Provider
+                    </p>
+                    <t t-if='env.company.awb_pos_provider_id'>
+                        <p t-esc="env.company.awb_pos_provider_id" />
+                    </t>
+                    <t t-if='env.company.awb_pos_provider_display_address'>
+                        <p t-esc="env.company.awb_pos_provider_display_address" />
+                    </t>
+                    <t t-if='env.company.awb_pos_provider_tin'>
+                        <p>
+                            TIN:
+                            <t t-esc="env.company.awb_pos_provider_tin" />
+                        </p>
+                    </t>
+                    <t t-if='env.company.awb_pos_provider_accreditation_no'>
+                        <p>
+                            Accreditation No.:
+                            <t t-esc="env.company.awb_pos_provider_accreditation_no" />
+                        </p>
+                    </t>
+                    <t t-if='env.company.awb_pos_provider_display_date'>
+                        <p>
+                            Date Issued:
+                            <t t-esc="env.company.awb_pos_provider_display_date" />
+                        </p>
+                    </t>
+                    <t t-if='env.company.awb_pos_provider_display_valid_until'>
+                        <p>
+                            Valid Until:
+                            <t t-esc="env.company.awb_pos_provider_display_valid_until" />
+                        </p>
+                    </t>
+                    <t t-if='env.company.awb_pos_provider_ptu'>
+                        <p>
+                            PTU No.:
+                            <t t-esc="env.company.awb_pos_provider_ptu" />
+                        </p>
+                    </t>
+                    <t t-if='env.company.awb_pos_provider_remarks'>
+                        <p t-esc="env.company.awb_pos_provider_remarks" />
+                    </t>
+                    <t t-if="env.company.taxpayer_remarks">
+                        <p t-esc="env.company.taxpayer_remarks" />
+                    </t>
+                </div>
+            </div>
+        </template>
+
+        <template id="z_reading_report">
+            <t t-set="company" t-value="env.company" />
+            <t t-call="web.html_container">
+                <t t-call="cc_z_reading.z_reading_report_style">
+                    <div class="page">
+
+                        <div class="text-center">
+                            <h2>Z-Reading Details</h2>
+                            <p>EOD Counter: 0</p>
+                            <p>Grand Total Reset Counter: 0</p>
+                            <!-- add receipt type from pos_sale_receipt module -->
+                            <!-- <t t-if="company.taxpayer_receipt == 'or'">
+                                <t t-set="receipt_type" t-value="'Official Receipt'" />
+                            </t>
+                            <t t-if="company.taxpayer_receipt == 'si'">
+                                <t t-set="receipt_type" t-value="'Sales Invoice'" />
+                            </t>
+                            <t t-if="company.taxpayer_receipt == 'ci'">
+                                <t t-set="receipt_type" t-value="'Commercial Invoice'" />
+                            </t>
+                            <p>
+                                <span t-esc="receipt_type" />
+                                Reset Counter: 0
+                            </p> -->
+                            <!-- add reset counter -->
+                            <p>
+                                BEGINNING READING:
+                                <span t-esc="beginning_reading" />
+                            </p>
+                            <p>
+                                ENDING READING:
+                                <span t-esc="ending_reading" />
+                            </p>
+
+                            <table class="table table-sm" style="width: 80%; text-align: left; table-layout: fixed; margin-left: auto; margin-right: auto;">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>DESCRIPTION</th>
+                                        <th>AMOUNT</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>TOTAL SALES</td>
+                                        <td>
+                                            <t t-esc="total_sales" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>TOTAL RETURNS</td>
+                                        <td>
+                                            <t t-esc="total_returns" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>TOTAL VOIDS</td>
+                                        <td>
+                                            <t t-esc="total_voids" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>TOTAL DISCOUNTS</td>
+                                        <td>
+                                            <t t-esc="total_discounts" />
+                                        </td>
+                                    </tr>
+                                    <tr class="table-active">
+                                        <td>
+                                            <strong>SUBTOTAL</strong>
+                                        </td>
+                                        <td>
+                                            <strong>
+                                                <t t-esc="subtotal" />
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>VATABLE SALES</td>
+                                        <td>
+                                            <t t-esc="vatable_sales" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>12% VAT</td>
+                                        <td>
+                                            <t t-esc="vat_12" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>VAT EXEMPT SALES</td>
+                                        <td>
+                                            <t t-esc="vat_exempt_sales" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>VAT ZERO-RATED SALES</td>
+                                        <td>
+                                            <t t-esc="zero_rated_sales" />
+                                        </td>
+                                    </tr>
+                                    <tr class="table-active">
+                                        <td>
+                                            <strong>REGISTER TOTAL</strong>
+                                        </td>
+                                        <td>
+                                            <strong>
+                                                <t t-esc="register_total" />
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                    <tr t-foreach='payments' t-as='payment'>
+                                        <td>
+                                            <t t-esc="payment['name']" />
+                                        </td>
+                                        <td>
+                                            <t t-esc="payment['total']" t-options="{'widget': 'float', 'precision': currency_precision}" />
+                                        </td>
+                                    </tr>
+                                    <tr class="table-active">
+                                        <td>
+                                            <strong>MEDIA TENDER SUBTOTAL:</strong>
+                                        </td>
+                                        <td>
+                                            <t t-set="media_total" t-value="0" />
+                                            <t t-foreach="payments" t-as="p">
+                                                <t t-set="media_total" t-value="media_total + p['total']" />
+                                            </t>
+                                            <strong>
+                                                <t t-esc="media_total" />
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>REGULAR DISCOUNT</td>
+                                        <td>
+                                            <t t-esc="regular_discount" />
+                                        </td>
+                                    </tr>
+                                    <!-- ADD THE COMPUTED FIELDS AT THE FOLLOWING DATA CELLS WHEN CONFIRMED TO BE REQUIRED-->
+                                    <!-- <tr>
+                                        <td>SC/PWD 5%</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>SC 20%</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>PWD 20%</td>
+                                        <td></td>
+                                    </tr> -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>
