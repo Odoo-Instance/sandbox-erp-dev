@@ -65,8 +65,6 @@
                                 </group>
                                 <group name="awb_group_pos_provider_machine" string="Machine Information">
                                     <field name="taxpayer_min" string="MIN" />
-                                    <field name="taxpayer_machine_serial_number" string="Serial Number" />
-                                    <field name="taxpayer_receipt" string="Receipt/Invoice Type" />
                                 </group>
                             </group>
                         </page>

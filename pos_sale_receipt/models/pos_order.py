@@ -10,6 +10,7 @@ class PosOrder(models.Model):
     increase_sequence = fields.Boolean(string='Increase Sequence', default=False)
     send_warning = fields.Boolean(string='Show Warning')
     remaining_sequence_number = fields.Integer(string='Remaning sequence', readonly=True, default=0)    
+    next_sequence_number = fields.Char(string='Next Sequence Number', default='')
 
     @api.model
     def create_from_ui(self, orders, draft=False):
@@ -31,9 +32,13 @@ class PosOrder(models.Model):
             if crm_team_record.sale_team_prefix_id and crm_team_record.ending_sequence_number > crm_team_record.current_sequence_number and res['increase_sequence']:
                 res['increase_sequence'] = False        
                 crm_team_record.current_sequence_number += 1
+                next_sequence_number_sufix = crm_team_record.current_sequence_number + 1
                 current_sequence_number_with_format = str(crm_team_record.current_sequence_number).zfill(6)
+                next_sequence_number_complete = str(next_sequence_number_sufix).zfill(6)
                 if crm_team_record.ending_sequence_number > pow(9,6):
                     length_of_ending_sequence_number = len(str(crm_team_record.ending_sequence_number))
                     current_sequence_number_with_format = str(crm_team_record.current_sequence_number).zfill(length_of_ending_sequence_number)
+                    next_sequence_number_complete = str(next_sequence_number_sufix).zfill(length_of_ending_sequence_number)
                 res['pos_reference'] = crm_team_record.sale_team_prefix_id.name + ' ' + str(current_sequence_number_with_format)
+                res['next_sequence_number'] = crm_team_record.sale_team_prefix_id.name + ' ' + str(next_sequence_number_complete)
         return res

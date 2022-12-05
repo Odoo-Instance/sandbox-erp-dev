@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
-from ast import Store
+# from ast import Store
 
-from traitlets import default
+# from traitlets import default
 from odoo import fields, models, api, _
 from odoo.exceptions import ValidationError, UserError
 

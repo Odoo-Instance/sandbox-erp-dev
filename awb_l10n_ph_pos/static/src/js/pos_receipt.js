@@ -6,8 +6,6 @@ odoo.define('awb_l10n_ph_pos.OrderRecieptPosProvider', function (require) {
             'taxpayer_is_vat_registered',
             'taxpayer_min',
             'taxpayer_remarks',
-            'taxpayer_machine_serial_number',
-            'taxpayer_receipt',
             'awb_pos_provider_id',
             'awb_pos_provider_tin',
             'awb_pos_provider_accreditation_no',
@@ -16,4 +14,13 @@ odoo.define('awb_l10n_ph_pos.OrderRecieptPosProvider', function (require) {
             'awb_pos_provider_ptu',
             'awb_pos_provider_remarks',
             'awb_pos_provider_display_address',]);
+
+    models.load_models([
+        {
+            model: 'pos.order',
+            fields: ['pos_reference','next_sequence_number'],
+            loaded: function(self,data){
+                self.order = data[0]}
+        },
+        ]);
 });

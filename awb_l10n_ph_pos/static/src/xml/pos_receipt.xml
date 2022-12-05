@@ -19,6 +19,9 @@
         <xpath expr="//div[hasclass('pos-receipt-order-data')]" position="after">
             <t t-call="OrderReceiptFooter" />
         </xpath>
+        <xpath expr="//t[@t-esc='receipt.name']" position="replace">
+            <t t-esc="receipt.receipt_number"/>
+        </xpath>
     </t>
     <t t-name="OrderLinesReceipt" t-inherit="point_of_sale.OrderLinesReceipt" t-inherit-mode="extension" owl="1">
         <xpath expr="//t[@t-elif='line.discount !== 0']/div[hasclass('pos-receipt-left-padding')]" position="replace">
@@ -72,10 +75,6 @@
                 <div t-if='env.pos.company.taxpayer_min'>
                     MIN#:
                     <t t-esc="env.pos.company.taxpayer_min" />
-                </div>
-                <div t-if='env.pos.company.taxpayer_machine_serial_number'>
-                    S/N:
-                    <t t-esc="env.pos.company.taxpayer_machine_serial_number" />
                 </div>
             </div>
         </div>
