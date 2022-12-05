@@ -40,14 +40,11 @@ class PosOrder(models.Model):
                     current_sequence_number_with_format = str(crm_team_record.current_sequence_number).zfill(length_of_ending_sequence_number)
                     next_sequence_number_complete = str(next_sequence_number_sufix).zfill(length_of_ending_sequence_number)
                 res['pos_reference'] = crm_team_record.sale_team_prefix_id.name + ' ' + str(current_sequence_number_with_format)
-<<<<<<< HEAD
                 res['next_sequence_number'] = crm_team_record.sale_team_prefix_id.name + ' ' + str(next_sequence_number_complete)
-=======
 
         return res
 
     def _prepare_invoice_vals(self):
         res = super(PosOrder, self)._prepare_invoice_vals()
         res['pos_order_id'] = self.id
->>>>>>> develop
         return res
