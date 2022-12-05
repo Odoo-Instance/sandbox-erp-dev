@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
+<<<<<<< HEAD
 # from ast import Store
 
 # from traitlets import default
+=======
+>>>>>>> develop
 from odoo import fields, models, api, _
-from odoo.exceptions import ValidationError, UserError
+from odoo.exceptions import ValidationError
 
 
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
-    remaning_receipts_count = fields.Integer('Remaning number of receipts', default=0)
     show_warning = fields.Boolean(string="Show Warning", default=False, store=True)
     sale_reference = fields.Char(string='Sale Reference', readonly=True, copy=False)
 
@@ -43,7 +45,6 @@ class SaleOrder(models.Model):
         if crm_team_record:
             if crm_team_record.threshold_sequence_number < crm_team_record.current_sequence_number:
                 self.show_warning = True
-                self.remaning_receipts_count = crm_team_record.ending_sequence_number - crm_team_record.current_sequence_number - 1
                 return
         self.show_warning = False
         return

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="VoidOrderReasonPopup" owl="1">
+        <div role="dialog" class="modal-dialog">
+            <div class="popup product-info-popup">
+                <header class="title">
+                   <t t-esc="props.title" />
+                </header>
+                <main class="body">
+                    <t t-esc="props.body" />
+                    <div class="checkbox" t-foreach="props.void_reasons" t-as="reason" style="text-align:left;">
+                        <lable>
+                            <input type="checkbox" t-att-id="reason.id" class="void_reason" style="width:10%;"/>
+                            <span t-att-id="reason.id" t-attf-for="reason.id" class="col-md-4 col-form-label"> <t t-esc="reason.name"/> </span>
+                        </lable>
+                    </div>
+                    <br/><br/>
+                    <label for="addition_reason_to_void">Other/New reason </label>
+                    <input type="text" id="addition_reason_to_void" name="addition_reason_to_void" maxlength="25" />                
+                </main>
+                <footer class="footer">
+                    <div class="button cancel" t-on-click="VoidOrder">
+                        Void
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </t>
+</templates>

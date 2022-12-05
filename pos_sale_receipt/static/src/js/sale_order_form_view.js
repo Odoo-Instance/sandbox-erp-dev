@@ -1,7 +1,6 @@
 odoo.define('pos_sale_receipt.FormView', function (require) {
     "use strict";
     var FormController = require('web.FormController');
-    console.log("sale_order_form-------");
     var ExtendFormController = FormController.include({
          _saveRecord: function () {
             if(this.modelName == 'sale.order'){
