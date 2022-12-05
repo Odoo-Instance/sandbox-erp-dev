@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_generate_z_reading_form" model="ir.ui.view">
+        <field name="name">cc_z_reading.z_reading.pdf.form</field>
+        <field name="model">cc_z_reading.z_reading</field>
+        <field name="priority" eval="20"/>
+        <field name="arch" type="xml">
+            <form string="Z-Reading">
+                <group>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                </group>
+                <group>
+                    <field name="crm_team_id" string="Sales Team" widget="selection"/>
+                </group>
+                <footer>
+                    <button name="generate_report" string="Print" type="object" class="btn-primary" data-hotkey="q"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary" data-hotkey="z"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+    <record id="action_report_pos_z_reading" model="ir.actions.act_window">
+        <field name="name">Z-Reading</field>
+        <field name="res_model">cc_z_reading.z_reading</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'sequence': 1, 'view_mode': 'form', 'view_id': ref('cc_z_reading.view_generate_z_reading_form')}),
+        ]"/>
+    </record>
+    
+    <menuitem id="menu_report_pos_z_reading" name="Z-Reading" action="action_report_pos_z_reading" parent="point_of_sale.menu_point_rep" sequence="5"/>
+</odoo>

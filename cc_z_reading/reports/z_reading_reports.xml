@@ -1,0 +1,24 @@
+<odoo>
+    <record id="z_reading_report_paperformat" model="report.paperformat">
+        <field name="name">Z-Reading Paper Format</field>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="margin_top">40</field>
+        <field name="margin_bottom">70</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">5</field>
+        <field name="header_spacing">35</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="action_z_reading_report" model="ir.actions.report">
+        <field name="name">Z-Reading</field>
+        <field name="model">cc_z_reading.z_reading</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">cc_z_reading.z_reading_report</field>
+        <field name="report_file">cc_z_reading.z_reading_report</field>
+        <field name="paperformat_id" ref="cc_z_reading.z_reading_report_paperformat"/>
+    </record>
+</odoo>

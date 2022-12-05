@@ -9,7 +9,6 @@ class ResCompany(models.Model):
     taxpayer_identification_number = fields.Char()
     taxpayer_info = fields.Char(compute='_get_tin_info', readonly=True)
     taxpayer_min = fields.Char()
-    taxpayer_machine_serial_number = fields.Char()
 
     awb_pos_provider_id = fields.Many2one('res.partner', string='POS Provider')
     awb_pos_provider_street = fields.Char('POS Provider Street')
@@ -33,9 +32,6 @@ class ResCompany(models.Model):
     awb_pos_provider_display_valid_until = fields.Char(
         compute='_compute_awb_pos_provider_display_date', string='Provider Display Date')
     awb_pos_provider_is_training_mode = fields.Boolean()
-
-    taxpayer_receipt = fields.Selection(
-        [('or', 'Official Receipt'), ('si', 'Sales Invoice'), ('ci', 'Commercial Invoice')], default='or')
 
     @api.depends('awb_pos_provider_date', 'awb_pos_provider_valid_until')
     def _compute_awb_pos_provider_display_date(self):

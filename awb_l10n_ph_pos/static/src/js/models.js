@@ -43,176 +43,7 @@ odoo.define('awb_l10n_ph_pos.models', function (require) {
         // plus the associated payment information (the Paymentlines)
         // there is always an active ('selected') order in the Pos, a new one is created
         // automaticaly once an order is completed and sent to the server.
-        initialize: function (attributes, options) {
-            _super_order.initialize.apply(this, arguments);
-            var self = this;
-            options = options || {};
-
-            this.locked = false;
-            this.pos = options.pos;
-            this.selected_orderline = undefined;
-            this.selected_paymentline = undefined;
-            this.screen_data = {};  // see Gui
-            this.temporary = options.temporary || false;
-            this.creation_date = new Date();
-            this.to_invoice = false;
-            this.orderlines = new OrderlineCollection();
-            this.paymentlines = new PaymentlineCollection();
-            this.pos_session_id = this.pos.pos_session.id;
-            this.employee = this.pos.employee;
-            this.finalized = false; // if true, cannot be modified.
-            this.set_pricelist(this.pos.default_pricelist);
-
-            this.set({ client: null });
-
-            this.uiState = {
-                ReceiptScreen: new Context({
-                    inputEmail: '',
-                    // if null: not yet tried to send
-                    // if false/true: tried sending email
-                    emailSuccessful: null,
-                    emailNotice: '',
-                }),
-                TipScreen: new Context({
-                    inputTipAmount: '',
-                })
-            };
-
-            // FETCH taxpayer_receipt
-            var receipt_type = this.pos.company.taxpayer_receipt.toUpperCase();
-
-            if (options.json) {
-                this.init_from_JSON(options.json);
-            } else {
-                this.sequence_number = this.pos.pos_session.sequence_number++;
-                this.uid = this.generate_unique_id();
-                this.name = _.str.sprintf(_t("%s # %s"), receipt_type, this.uid); //add receipt type as prefix
-                this.validation_date = undefined;
-                this.fiscal_position = _.find(this.pos.fiscal_positions, function (fp) {
-                    return fp.id === self.pos.config.default_fiscal_position_id[0];
-                });
-            }
-
-            this.on('change', function () { this.save_to_db("order:change"); }, this);
-            this.orderlines.on('change', function () { this.save_to_db("orderline:change"); }, this);
-            this.orderlines.on('add', function () { this.save_to_db("orderline:add"); }, this);
-            this.orderlines.on('remove', function () { this.save_to_db("orderline:remove"); }, this);
-            this.paymentlines.on('change', function () { this.save_to_db("paymentline:change"); }, this);
-            this.paymentlines.on('add', function () { this.save_to_db("paymentline:add"); }, this);
-            this.paymentlines.on('remove', function () { this.save_to_db("paymentline:rem"); }, this);
-
-            if (this.pos.config.iface_customer_facing_display) {
-                this.paymentlines.on('add', this.pos.send_current_order_to_customer_facing_display, this.pos);
-                this.paymentlines.on('remove', this.pos.send_current_order_to_customer_facing_display, this.pos);
-            }
-
-            this.save_to_db();
-
-            return this;
-        },
-        save_to_db: function () {
-            if (!this.temporary && !this.locked) {
-                this.assert_editable();
-                this.pos.db.save_unpaid_order(this);
-            }
-        },
-        /**
-         * Initialize PoS order from a JSON string.
-         *
-         * If the order was created in another session, the sequence number should be changed so it doesn't conflict
-         * with orders in the current session.
-         * Else, the sequence number of the session should follow on the sequence number of the loaded order.
-         *
-         * @param {object} json JSON representing one PoS order.
-         */
-        init_from_JSON: function (json) {
-            _super_order.init_from_JSON.apply(this, arguments);
-
-            var client;
-            if (json.state && ['done', 'invoiced', 'paid'].includes(json.state)) {
-                this.sequence_number = json.sequence_number;
-            } else if (json.pos_session_id !== this.pos.pos_session.id) {
-                this.sequence_number = this.pos.pos_session.sequence_number++;
-            } else {
-                this.sequence_number = json.sequence_number;
-                this.pos.pos_session.sequence_number = Math.max(this.sequence_number + 1, this.pos.pos_session.sequence_number);
-            }
-            this.session_id = this.pos.pos_session.id;
-            this.uid = json.uid;
-
-            // FETCH taxpayer_receipt
-            var receipt_type = this.pos.company.taxpayer_receipt.toUpperCase();
-
-            this.name = _.str.sprintf(_t("%s # %s"), receipt_type, this.uid); //add receipt type as prefix
-            this.validation_date = json.creation_date;
-            this.server_id = json.server_id ? json.server_id : false;
-            this.user_id = json.user_id;
-
-            if (json.fiscal_position_id) {
-                var fiscal_position = _.find(this.pos.fiscal_positions, function (fp) {
-                    return fp.id === json.fiscal_position_id;
-                });
-
-                if (fiscal_position) {
-                    this.fiscal_position = fiscal_position;
-                } else {
-                    console.error('ERROR: trying to load a fiscal position not available in the pos');
-                }
-            }
-
-            if (json.pricelist_id) {
-                this.pricelist = _.find(this.pos.pricelists, function (pricelist) {
-                    return pricelist.id === json.pricelist_id;
-                });
-            } else {
-                this.pricelist = this.pos.default_pricelist;
-            }
-
-            if (json.partner_id) {
-                client = this.pos.db.get_partner_by_id(json.partner_id);
-                if (!client) {
-                    console.error('ERROR: trying to load a partner not available in the pos');
-                }
-            } else {
-                client = null;
-            }
-            this.set_client(client);
-
-            this.temporary = false;     // FIXME
-            this.to_invoice = false;    // FIXME
-            this.to_ship = false;
-
-            var orderlines = json.lines;
-            for (var i = 0; i < orderlines.length; i++) {
-                var orderline = orderlines[i][2];
-                if (this.pos.db.get_product_by_id(orderline.product_id)) {
-                    this.add_orderline(new models.Orderline({}, { pos: this.pos, order: this, json: orderline }));
-                }
-            }
-
-            var paymentlines = json.statement_ids;
-            for (var i = 0; i < paymentlines.length; i++) {
-                var paymentline = paymentlines[i][2];
-                var newpaymentline = new models.Paymentline({}, { pos: this.pos, order: this, json: paymentline });
-                this.paymentlines.add(newpaymentline);
-
-                if (i === paymentlines.length - 1) {
-                    this.select_paymentline(newpaymentline);
-                }
-            }
-
-            // Tag this order as 'locked' if it is already paid.
-            this.locked = ['paid', 'done', 'invoiced'].includes(json.state);
-            this.state = json.state;
-            this.amount_return = json.amount_return;
-            this.account_move = json.account_move;
-            this.backendId = json.id;
-            this.isFromClosedSession = json.is_session_closed;
-            this.is_tipped = json.is_tipped || false;
-            this.tip_amount = json.tip_amount || 0;
-
-
-        },
+       
         export_for_printing: function () {
 
             var orderlines = [];
@@ -310,8 +141,10 @@ odoo.define('awb_l10n_ph_pos.models', function (require) {
                     address_info = address_info + " " + address_array[x];
                 }
             }
-
+            
+            
             var receipt = {
+                receipt_number: this.pos.order.next_sequence_number, //display next receipt number
                 zero_rated: zero_rated,
                 vatable_sales: vatable_sales,
                 vat_exempt: vat_exempt,
