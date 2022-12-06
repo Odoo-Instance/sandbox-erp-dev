@@ -21,7 +21,8 @@
     'depends': [
         'point_of_sale',
         'cc_custom_account',
-        'crm',
+        'pos_sale_receipt',
+        'awb_l10n_ph_pos',
 
     ],
     # always loaded
