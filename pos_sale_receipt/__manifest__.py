@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "pos_sale_receipt",
+    'name': "POS Sale Receipt",
 
     'summary': """
         AWB POS & sale receipt """,
@@ -14,7 +14,7 @@
     'category': 'Localization',
     'version': '15.0.1',
 
-    'depends': ['base', 'point_of_sale', 'sale_management'],
+    'depends': ['base', 'point_of_sale', 'sale_management', 'account'],
 
     'data': [
         'security/ir.model.access.csv',
