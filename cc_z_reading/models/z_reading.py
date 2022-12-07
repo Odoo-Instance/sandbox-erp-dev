@@ -2,7 +2,7 @@ import base64
 from email.policy import default
 import logging
 import re
-from datetime import timedelta
+from datetime import timedelta, datetime
 from functools import partial
 from itertools import groupby
 from xml.etree.ElementTree import tostring
@@ -27,7 +27,11 @@ class ZReading(models.Model):
 
 		"""
 		arrange_z_reading_ids = self.search([], order='end_date desc')
-		return arrange_z_reading_ids[0].end_date
+		if arrange_z_reading_ids:
+			return arrange_z_reading_ids[0].end_date
+
+		else:
+			return datetime.now()
 
 	start_date = fields.Datetime(required=True, default=_default_start_date)
 	end_date = fields.Datetime(required=True, default=fields.Datetime.now)
