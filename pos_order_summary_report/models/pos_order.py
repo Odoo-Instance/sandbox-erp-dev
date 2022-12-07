@@ -55,19 +55,21 @@ class PosOrder(models.Model):
         for order in self:
             related_invoice_id = self.env['account.move'].search(
                 [('pos_order_id', '=', self.id), ('move_type', '=', 'out_invoice')], limit=1)
-            related_journal_id = self.env['account.move'].search(
-                [('id', '=', related_invoice_id.id + 1), ('move_type', '=', 'entry')], limit=1)
+            ref = '%'+ related_invoice_id.name
+            related_journal_record = self.env['account.move'].search(
+            [('move_type', '=', 'entry'), ('ref', 'like', ref)], limit=1)
+
             if reasons:
                 order.write({'state': 'voided', 'voided_order': True, 'void_reason_ids': reasons})
             else:
                 order.write({'state': 'voided', 'voided_order': True})
 
             return order.env['account.move.reversal']\
-                .with_context(active_model="account.move", active_ids=related_journal_id.id)\
+                .with_context(active_model="account.move", active_ids=related_journal_record.id)\
                 .create({
                     'reason': "",
                     'refund_method': 'cancel',
-                    'journal_id': related_journal_id.journal_id.id,
-                    'move_ids': [(4, related_journal_id.id, 0)]
+                    'journal_id': related_journal_record.journal_id.id,
+                    'move_ids': [(4, related_journal_record.id, 0)]
                 })\
                 .reverse_moves()
