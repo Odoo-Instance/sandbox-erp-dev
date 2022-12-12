@@ -33,6 +33,7 @@
                                     <field name="phone" class="o_force_ltr" />
                                     <field name="mobile" class="o_force_ltr" />
                                     <field name="email" />
+                                    <field name="account_default_pos_receivable_account_id"/>
                                     <field name="website" string="Website" widget="url" placeholder="e.g. https://www.odoo.com" />
                                     <field name="parent_id" groups="base.group_multi_company" />
                                     <field name="sequence" invisible="1" />
