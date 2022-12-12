@@ -89,7 +89,6 @@
             <t t-call="web.html_container">
                 <t t-call="cc_z_reading.z_reading_report_style">
                     <div class="page">
-
                         <div class="text-center">
                             <h2>Z-Reading Details</h2>
                             <p>EOD Counter: 0</p>
@@ -111,11 +110,31 @@
                             <!-- add reset counter -->
                             <p>
                                 BEGINNING READING:
-                                <span t-esc="beginning_reading" />
+                                <t t-if="beginning_reading">
+                                    <span t-esc="beginning_reading" />
+                                </t>
+                                <t t-elif="docs">
+                                    <t t-foreach="docs" t-as="o">
+                                        <span t-esc="o.beginning_reading"/>
+                                    </t>
+                                </t>
+                                <t t-else="">
+                                    <span>0.0</span>
+                                </t>
                             </p>
                             <p>
                                 ENDING READING:
-                                <span t-esc="ending_reading" />
+                                <t t-if="ending_reading">
+                                    <span t-esc="ending_reading" />
+                                </t>
+                                <t t-elif="docs">
+                                    <t t-foreach="docs" t-as="o">
+                                        <span t-esc="o.ending_reading" />
+                                    </t>
+                                </t>
+                                <t t-else="">
+                                    <span>0.0</span>
+                                </t>
                             </p>
 
                             <table class="table table-sm" style="width: 80%; text-align: left; table-layout: fixed; margin-left: auto; margin-right: auto;">
@@ -129,25 +148,65 @@
                                     <tr>
                                         <td>TOTAL SALES</td>
                                         <td>
-                                            <t t-esc="total_sales" />
+                                            <t t-if="total_sales">
+                                                <t t-esc="total_sales" />
+                                            </t>
+                                            <t t-elif="docs">
+                                                <t t-foreach="docs" t-as="o">
+                                                    <span t-esc="o.total_sales"/>
+                                                </t>
+                                            </t>
+                                            <t t-else="">
+                                                <span>0.0</span>
+                                            </t>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>TOTAL RETURNS</td>
                                         <td>
-                                            <t t-esc="total_returns" />
+                                            <t t-if="total_returns">
+                                                <t t-esc="total_returns" /> 
+                                            </t>
+                                            <t t-elif="docs">
+                                                <t t-foreach="docs" t-as="o">
+                                                    <span t-esc="o.total_returns"/>
+                                                </t>
+                                            </t>
+                                            <t t-else="">
+                                                <span>0.0</span>
+                                            </t>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>TOTAL VOIDS</td>
                                         <td>
-                                            <t t-esc="total_voids" />
+                                            <t t-if="total_voids">
+                                                <t t-esc="total_voids" />
+                                            </t>
+                                            <t t-elif="docs">
+                                                <t t-foreach="docs" t-as="o">
+                                                    <span t-esc="o.total_voids"/>
+                                                </t>
+                                            </t>
+                                            <t t-else="">
+                                                <span>0.0</span>
+                                            </t>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>TOTAL DISCOUNTS</td>
                                         <td>
-                                            <t t-esc="total_discounts" />
+                                            <t t-if="total_discounts">
+                                                <t t-esc="total_discounts" />
+                                            </t>
+                                            <t t-elif="docs">
+                                                <t t-foreach="docs" t-as="o">
+                                                    <span t-esc="o.total_discounts"/>
+                                                </t>
+                                            </t>
+                                            <t t-else="">
+                                                <span>0.0</span>
+                                            </t>
                                         </td>
                                     </tr>
                                     <tr class="table-active">
@@ -156,32 +215,82 @@
                                         </td>
                                         <td>
                                             <strong>
-                                                <t t-esc="subtotal" />
+                                                <t t-if="subtotal">
+                                                    <t t-esc="subtotal" />
+                                                </t>
+                                                <t t-elif="docs">
+                                                    <t t-foreach="docs" t-as="o">
+                                                        <span t-esc="o.subtotal"/>
+                                                    </t>
+                                                </t>
+                                                <t t-else="">
+                                                    <span>0.0</span>
+                                                </t>
                                             </strong>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>VATABLE SALES</td>
                                         <td>
-                                            <t t-esc="vatable_sales" />
+                                            <t t-if="vatable_sales">
+                                                <t t-esc="vatable_sales" />
+                                            </t>
+                                            <t t-elif="docs">
+                                                <t t-foreach="docs" t-as="o">
+                                                    <span t-esc="o.vatable_sales"/>
+                                                </t>
+                                            </t>
+                                            <t t-else="">
+                                                <span>0.0</span>
+                                            </t>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>12% VAT</td>
                                         <td>
-                                            <t t-esc="vat_12" />
+                                            <t t-if="vat_12">
+                                                <t t-esc="vat_12" />
+                                            </t>
+                                            <t t-elif="docs">
+                                                <t t-foreach="docs" t-as="o">
+                                                    <span t-esc="o.vat_12"/>
+                                                </t>
+                                            </t>
+                                            <t t-else="">
+                                                <span>0.0</span>
+                                            </t>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>VAT EXEMPT SALES</td>
                                         <td>
-                                            <t t-esc="vat_exempt_sales" />
+                                            <t t-if="vat_exempt_sales">
+                                                <t t-esc="vat_exempt_sales" />
+                                            </t>
+                                            <t t-elif="docs">
+                                                <t t-foreach="docs" t-as="o">
+                                                    <span t-esc="o.vat_exempt_sales"/>
+                                                </t>
+                                            </t>
+                                            <t t-else="">
+                                                <span>0.0</span>
+                                            </t>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>VAT ZERO-RATED SALES</td>
                                         <td>
-                                            <t t-esc="zero_rated_sales" />
+                                            <t t-if="zero_rated_sales">
+                                                <t t-esc="zero_rated_sales" />
+                                            </t>
+                                            <t t-elif="docs">
+                                                <t t-foreach="docs" t-as="o">
+                                                    <span t-esc="o.zero_rated_sales"/>
+                                                </t>
+                                            </t>
+                                            <t t-else="">
+                                                <span>0.0</span>
+                                            </t>
                                         </td>
                                     </tr>
                                     <tr class="table-active">
@@ -190,36 +299,108 @@
                                         </td>
                                         <td>
                                             <strong>
-                                                <t t-esc="register_total" />
+                                                <t t-if="register_total">
+                                                    <t t-esc="register_total" />
+                                                </t>
+                                                <t t-elif="docs">
+                                                    <t t-foreach="docs" t-as="o">
+                                                        <span t-esc="o.register_total"/>
+                                                    </t>
+                                                </t>
+                                                <t t-else="">
+                                                    <span>0.0</span>
+                                                </t>
                                             </strong>
                                         </td>
                                     </tr>
-                                    <tr t-foreach='payments' t-as='payment'>
-                                        <td>
-                                            <t t-esc="payment['name']" />
-                                        </td>
-                                        <td>
-                                            <t t-esc="payment['total']" t-options="{'widget': 'float', 'precision': currency_precision}" />
-                                        </td>
-                                    </tr>
+                                    <!-- Pseudocode for fetching the payment names and totals -->
+                                    <!-- for (o.payments_ids): 
+                                            p.name = o.payments...name
+                                            
+                                            for o.payments_ids.payment_method_id.name:
+                                                p.name = o.payments...name
+
+                                        for payment_method_id:
+                                            for payments_ids:
+                                                if payment_method_id == payments_ids.payment_method_id:
+                                                    payment_total += payments_ids.amount
+
+                                            t-esc="payment_method_id.name"
+                                            t-esc="payment_total"
+                                            account_move.pos_order_id
+                                    -->
+                                    <t t-if="payments">
+                                        <tr t-foreach='payments' t-as='payment'>
+                                            <td>
+                                                <t t-esc="payment['name']" />
+                                            </td>
+                                            <td>
+                                                <t t-esc="payment['total']" t-options="{'widget': 'float', 'precision': currency_precision}" />
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <t t-elif="docs">
+                                        <t t-foreach="docs" t-as="o">
+                                            <t t-set="media_total" t-value="0" />
+
+                                            <tr t-foreach="o.payments_ids.payment_method_id" t-as="pm">
+                                                <t t-set="payment_total" t-value="0"/>
+                                                <t t-foreach="o.payments_ids" t-as="p">
+                                                    <t t-if="p.payment_method_id == pm">
+                                                        <t t-set="payment_total" t-value="p.amount + payment_total"/>
+                                                    </t>
+                                                </t>
+                                                <td>
+                                                    <span t-esc="pm.name"/>
+                                                </td>
+                                                <td>
+                                                    <span t-esc="'%.2f'%(payment_total)"/>
+                                                    <t t-set="media_total" t-value="payment_total + media_total"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                    <t t-else="">
+                                        <span>0.0</span>
+                                    </t>
+
                                     <tr class="table-active">
                                         <td>
                                             <strong>MEDIA TENDER SUBTOTAL:</strong>
                                         </td>
                                         <td>
-                                            <t t-set="media_total" t-value="0" />
-                                            <t t-foreach="payments" t-as="p">
-                                                <t t-set="media_total" t-value="media_total + p['total']" />
+                                            <t t-if="payments">
+                                                <t t-set="media_total" t-value="0" />
+                                                <t t-foreach="payments" t-as="p">
+                                                    <t t-set="media_total" t-value="media_total + p['total']" />
+                                                </t>
+                                                
+                                                <strong>
+                                                    <t t-esc="media_total" />
+                                                </strong>
                                             </t>
-                                            <strong>
-                                                <t t-esc="media_total" />
-                                            </strong>
+                                            <t t-elif="media_total">
+                                                <strong t-esc="'%.2f'%(media_total)"/>
+                                            </t>
+                                            <t t-else="">
+                                                <strong>0.0</strong>
+                                            </t>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>REGULAR DISCOUNT</td>
                                         <td>
-                                            <t t-esc="regular_discount" />
+                                            <t t-if="regular_discount">
+                                                <t t-esc="regular_discount" />
+                                            </t>
+                                            <t t-elif="docs">
+                                                <t t-foreach="docs" t-as="o">
+                                                    <span t-esc="o.regular_discount"/>
+                                                </t>
+                                            </t>
+                                            <t t-else="">
+                                                <span>0.0</span>
+                                            </t>
                                         </td>
                                     </tr>
                                     <!-- ADD THE COMPUTED FIELDS AT THE FOLLOWING DATA CELLS WHEN CONFIRMED TO BE REQUIRED-->

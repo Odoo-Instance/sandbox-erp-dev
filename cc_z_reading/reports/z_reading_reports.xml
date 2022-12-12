@@ -20,5 +20,7 @@
         <field name="report_name">cc_z_reading.z_reading_report</field>
         <field name="report_file">cc_z_reading.z_reading_report</field>
         <field name="paperformat_id" ref="cc_z_reading.z_reading_report_paperformat"/>
+        <field name="binding_model_id" ref="model_cc_z_reading_z_reading"/>
+        <field name="binding_type">report</field>
     </record>
 </odoo>

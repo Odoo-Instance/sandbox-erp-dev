@@ -130,7 +130,7 @@
         <field name="model">cc_z_reading.z_reading</field>
         <field name="arch" type="xml">
             <tree string="Z-Reading" create="0">
-                <field name="session_ids"/>
+                <field name="id" />
                 <field name="start_date" />
                 <field name="end_date" />
                 <field name="total_sales" />
@@ -138,6 +138,15 @@
                 <field name="total_voids" />
                 <field name="total_discounts" />
                 <field name="subtotal" />
+                <field name="beginning_reading" optional="hide"/>
+                <field name="ending_reading" optional="hide"/>
+                <field name="vatable_sales" optional="hide"/>
+                <field name="vat_12" optional="hide"/>
+                <field name="vat_exempt_sales" optional="hide"/>
+                <field name="zero_rated_sales" optional="hide"/>
+                <field name="register_total" optional="hide"/>
+                <!-- ADD PAYMENTS -->
+                <field name="regular_discount" optional="hide"/>
             </tree>
         </field>
     </record>
@@ -148,7 +157,7 @@
         <field name="model">cc_z_reading.z_reading</field>
         <field name="priority" eval="10"/>
         <field name="arch" type="xml">
-            <form string="Z-Reading">
+            <form string="Z-Reading" create="false" edit="false">
                 <sheet> 
                     <group col="4" colspan="4">
                         <!-- <field name="id" string="Z-Reading Id" options="{'no_create': True}"/> -->
