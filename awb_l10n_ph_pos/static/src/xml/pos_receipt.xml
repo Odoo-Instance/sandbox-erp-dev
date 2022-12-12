@@ -87,15 +87,15 @@
                     Zero Rated Sales:
                     <span t-esc="env.pos.format_currency(receipt.zero_rated)" class="pos-receipt-right-align" />
                 </div>
-                <div>
+                <div style="padding-top:1mm;">
                     VATable Sales:
                     <span t-esc="env.pos.format_currency(receipt.vatable_sales)" class="pos-receipt-right-align" />
                 </div>
-                <div class="vatable">
+                <div class="vatable" style="padding-top:1mm;">
                     VAT Amount
                     <span t-esc="env.pos.format_currency(receipt.vat_amount)" class="pos-receipt-right-align" />
                 </div>
-                <div class="vat-exempt">
+                <div class="vat-exempt" style="padding-top:1mm; padding-bottom:1mm;">
                     VAT Exempt Sales:
                     <span t-esc="env.pos.format_currency(receipt.vat_exempt)" class="pos-receipt-right-align" />
                 </div>
@@ -117,15 +117,15 @@
                 Zero Rated Sales:
                 <span t-esc="env.pos.format_currency(receipt.zero_rated)" class="pos-receipt-right-align" />
             </div>
-            <div>
+            <div style="padding-top:1mm;">
                 VATable Sales:
                 <span t-esc="env.pos.format_currency(receipt.vatable_sales)" class="pos-receipt-right-align" />
             </div>
-            <div class="vatable">
+            <div class="vatable" style="padding-top:1mm;">
                 VAT Amount
                 <span t-esc="env.pos.format_currency(receipt.vat_amount)" class="pos-receipt-right-align" />
             </div>
-            <div class="vat-exempt">
+            <div class="vat-exempt" style="padding-top:1mm; padding-bottom:1mm;">
                 VAT Exempt Sales:
                 <span t-esc="env.pos.format_currency(receipt.vat_exempt)" class="pos-receipt-right-align" />
             </div>
