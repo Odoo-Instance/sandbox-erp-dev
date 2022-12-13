@@ -322,7 +322,8 @@ class ZReading(models.Model):
 					  ]
 				orders = self.env['pos.order'].search(domain)
 				for order in orders:
-					amount_total += order.lines.price_subtotal
+					for line in order.lines:
+						amount_total += line.price_subtotal
 
 			r.zero_rated_sales = round(amount_total, 2)
 
