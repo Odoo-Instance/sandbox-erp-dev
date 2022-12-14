@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="coupon_program_form_inherit">
+        <field name="name">coupon.program.form.inherit</field>
+        <field name="model">coupon.program</field>
+        <field name="inherit_id" ref="coupon.coupon_program_view_form_common"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='company_id']" position="before">
+                <label string="Maximum Purchase Of" for="rule_maximum_amount" />
+                <div name="rule_maximum_amount" class="o_row">
+                    <field name="rule_maximum_amount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                    <field name="rule_maximum_amount_tax_inclusion" required="1"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
