@@ -141,27 +141,64 @@ class ZReading(models.Model):
 			print("Sessions >", sessions)
 
 			if sessions:
-				r.beginning_reading = round(
-					sessions[0].cash_register_id.balance_start, 2)
-				print("Starting Balance >",
-					sessions[0].cash_register_id.balance_start)
-				print("Total Payments Amount >",
-					sessions[0].total_payments_amount)
+				"""
+					check if the first session in sessions (the oldest session), 
+					is the first record. if it is true, set beginning reading as 0.
 
-				end_balance_total = 0
-				for session in sessions:
-					end_balance_total += session.total_payments_amount
-					print("Starting Balance per session >",
-						session.cash_register_id.balance_start)
-					print("Total Payments Amount per session >",
-						session.total_payments_amount)
+					if false, sum up the total payments of the previous sessions
+					as the beginning reading.
 
-				r.ending_reading = round(
+					maybe optimize this later.
+				"""
+				if sessions[0].id == 1:
+					r.beginning_reading = 0
+					
+					end_balance_total = 0
+					for session in sessions:
+						end_balance_total += session.total_payments_amount
+						print("Total Payments Amount per session >",
+							session.total_payments_amount)
+
+
+					r.ending_reading = round(
 					end_balance_total + r.beginning_reading, 2)
-				print("Total End Reading >", end_balance_total)
-				print("Ending Balance >", end_balance_total +
-					sessions[0].cash_register_id.balance_start)
+					print("Starting Balance > ", r.beginning_reading)
+					print("Ending Balance > ", r.ending_reading)
 
+
+					print("There are no sessions before this. This is the first session.")
+
+				else:
+					previous_session_id = sessions[0].id
+					previous_session_id -= 1
+
+					domain_previous_orders = ["&",
+						["session_id", "<=", previous_session_id],
+						["session_id.state","=","closed"]
+					]
+
+					previous_orders = self.env['pos.order'].search(domain_previous_orders)
+
+					amount_total = 0
+					for order in previous_orders:
+						amount_total += order.amount_total
+
+					print("Total Sales Before This Z-Reading > ", amount_total)
+
+					r.beginning_reading = round(amount_total, 2)
+
+					end_balance_total = 0
+					for session in sessions:
+						end_balance_total += session.total_payments_amount
+						print("Total Payments Amount per session >",
+							session.total_payments_amount)
+
+
+					r.ending_reading = round(
+					end_balance_total + r.beginning_reading, 2)
+					print("Starting Balance > ", r.beginning_reading)
+					print("Ending Balance > ", r.ending_reading)
+				
 			else:
 				r.beginning_reading = 0
 				r.ending_reading = 0
@@ -263,14 +300,21 @@ class ZReading(models.Model):
 			amount_total = 0
 
 			if sessions:
-				domain = ["&",
+				domain_orders = ["&",
 					  ["lines.tax_ids.tax_type", "=", "vatable"],
 					  ["session_id", "in", sessions.ids]
 					  ]
-				orders = self.env['pos.order'].search(domain)
-				for order in orders:
-					for line in order.lines:
-						amount_total += line.price_subtotal
+				orders = self.env['pos.order'].search(domain_orders)
+
+				domain_lines = ["&",
+					  ["tax_ids.tax_type", "=", "vatable"],
+					  ["order_id", "in", orders.ids]
+					  ]
+
+				lines = self.env['pos.order.line'].search(domain_lines)
+				
+				for line in lines:
+					amount_total += line.price_subtotal
 
 			r.vatable_sales = round(amount_total, 2)
 
@@ -298,14 +342,21 @@ class ZReading(models.Model):
 			amount_total = 0
 
 			if sessions:
-				domain = ["&",
+				domain_orders = ["&",
 					  ["lines.tax_ids.tax_type", "=", "vat_exempt"],
 					  ["session_id", "in", sessions.ids]
 					  ]
-				orders = self.env['pos.order'].search(domain)
-				for order in orders:
-					for line in order.lines:
-						amount_total += line.price_subtotal
+				orders = self.env['pos.order'].search(domain_orders)
+
+				domain_lines = ["&",
+					  ["tax_ids.tax_type", "=", "vat_exempt"],
+					  ["order_id", "in", orders.ids]
+					  ]
+
+				lines = self.env['pos.order.line'].search(domain_lines)
+				
+				for line in lines:
+					amount_total += line.price_subtotal
 
 			r.vat_exempt_sales = round(amount_total, 2)
 
@@ -316,14 +367,21 @@ class ZReading(models.Model):
 			amount_total = 0
 
 			if sessions:
-				domain = ["&",
+				domain_orders = ["&",
 					  ["lines.tax_ids.tax_type", "=", "zero_rated"],
 					  ["session_id", "in", sessions.ids]
 					  ]
-				orders = self.env['pos.order'].search(domain)
-				for order in orders:
-					for line in order.lines:
-						amount_total += line.price_subtotal
+				orders = self.env['pos.order'].search(domain_orders)
+
+				domain_lines = ["&",
+					  ["tax_ids.tax_type", "=", "zero_rated"],
+					  ["order_id", "in", orders.ids]
+					  ]
+
+				lines = self.env['pos.order.line'].search(domain_lines)
+				
+				for line in lines:
+					amount_total += line.price_subtotal
 
 			r.zero_rated_sales = round(amount_total, 2)
 

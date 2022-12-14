@@ -91,8 +91,6 @@
                     <div class="page">
                         <div class="text-center">
                             <h2>Z-Reading Details</h2>
-                            <p>EOD Counter: 0</p>
-                            <p>Grand Total Reset Counter: 0</p>
                             <!-- add receipt type from pos_sale_receipt module -->
                             <!-- <t t-if="company.taxpayer_receipt == 'or'">
                                 <t t-set="receipt_type" t-value="'Official Receipt'" />
