@@ -13,6 +13,10 @@ from odoo import _, api, fields, models
 from odoo.osv.expression import AND
 
 
+
+
+
+
 class ZReading(models.Model):
 	_name = 'cc_z_reading.z_reading'
 	_description = 'Model for Z-Reading'
@@ -59,7 +63,7 @@ class ZReading(models.Model):
 
 	crm_team_id = fields.Many2one('crm.team')
 	session_ids = fields.Many2many('pos.session', 'z_reading_sessions')
-	
+
 	# PLEASE UPDATE THE FIELD BELOW, ONCE THE MODULE FOR PWD AND SC DISCOUNTS ARE COMPLETED
 	# PLEASE ADD NEW FIELDS FOR FETCHING THE CORRESPONDING DISCOUNTS:
 	# # # * SC/PWD 5%
@@ -105,7 +109,7 @@ class ZReading(models.Model):
 				""", (tuple(payment_ids),))
 				payments = self.env.cr.dictfetchall()
 				self.payments_ids = payment_ids
-				
+
 				print("Payments > ", payments)
 			else:
 				payments = []
@@ -152,7 +156,7 @@ class ZReading(models.Model):
 				"""
 				if sessions[0].id == 1:
 					r.beginning_reading = 0
-					
+
 					end_balance_total = 0
 					for session in sessions:
 						end_balance_total += session.total_payments_amount
@@ -198,7 +202,7 @@ class ZReading(models.Model):
 					end_balance_total + r.beginning_reading, 2)
 					print("Starting Balance > ", r.beginning_reading)
 					print("Ending Balance > ", r.ending_reading)
-				
+
 			else:
 				r.beginning_reading = 0
 				r.ending_reading = 0
@@ -312,7 +316,7 @@ class ZReading(models.Model):
 					  ]
 
 				lines = self.env['pos.order.line'].search(domain_lines)
-				
+
 				for line in lines:
 					amount_total += line.price_subtotal
 
@@ -354,7 +358,7 @@ class ZReading(models.Model):
 					  ]
 
 				lines = self.env['pos.order.line'].search(domain_lines)
-				
+
 				for line in lines:
 					amount_total += line.price_subtotal
 
@@ -379,7 +383,7 @@ class ZReading(models.Model):
 					  ]
 
 				lines = self.env['pos.order.line'].search(domain_lines)
-				
+
 				for line in lines:
 					amount_total += line.price_subtotal
 
@@ -421,12 +425,12 @@ class ZReading(models.Model):
 			'beginning_reading': self.beginning_reading,
 			'ending_reading': self.ending_reading,
 		}
-
+		print(self)
 		data.update(self.get_payments(
 			data['date_start'], data['date_stop']))
 
 		# change self to []; what's the difference?
-		return self.env.ref('cc_z_reading.action_z_reading_report').report_action([], data=data) 
+		return self.env.ref('cc_z_reading.action_z_reading_report').report_action([], data=data)
 
 	"""
 		below are for the z-reading views;
@@ -474,7 +478,7 @@ class ZReading(models.Model):
 		for now this is commented out;
 		once the void module is added, add this in the view;
 	"""
-	
+
 	# def action_view_voids(self):
 	#     sessions = self.is_available(self.start_date,self.end_date,self.crm_team_id)
 	#     print("Session Id type > ", type(sessions.ids))
@@ -541,7 +545,7 @@ class ZReading(models.Model):
 
 		if sessions:
 			domain = ["&",['session_id', 'in', sessions.ids],["lines.tax_ids.tax_type", "=", "vatable"]]
-			
+
 		else:
 			domain = []
 		return {
@@ -558,10 +562,10 @@ class ZReading(models.Model):
 
 	def action_view_vat_exempt(self):
 		sessions = self.is_available(self.start_date,self.end_date,self.crm_team_id)
-		
+
 		if sessions:
 			domain = ["&",['session_id', 'in', sessions.ids],["lines.tax_ids.tax_type", "=", "vat_exempt"]]
-			
+
 		else:
 			domain = []
 		return {
@@ -581,7 +585,7 @@ class ZReading(models.Model):
 
 		if sessions:
 			domain = ["&",['session_id', 'in', sessions.ids],["lines.tax_ids.tax_type", "=", "zero_rated"]]
-			
+
 		else:
 			domain = []
 		return {
