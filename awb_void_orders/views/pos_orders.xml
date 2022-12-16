@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<!--replaced field in pos.orders form design-->
+	<record id="view_void_popup" model="ir.ui.view">
+        <field name="name">void.popup.pos.orders.inherit</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="%(void_model_wizard_action)d" string="Void Orders" class="oe_highlight" type="action" attrs="{'invisible': ['|', ('invoice_group', '=', False), ('state','!=','paid'),('state','!=','done'),('state','!=','invoiced')]}"  />
+            </xpath>
+            <xpath expr="//field[@name='state']" position="replace">
+                <field name="state" widget="statusbar" statusbar_visible="draft,paid,voided,done" />
+            </xpath>
+        </field>
+    </record>
+</odoo>
