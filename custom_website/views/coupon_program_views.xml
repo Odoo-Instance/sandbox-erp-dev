@@ -6,7 +6,7 @@
         <field name="model">coupon.program</field>
         <field name="inherit_id" ref="coupon.coupon_program_view_form_common"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='company_id']" position="before">
+            <xpath expr="//div[@name='rule_minimum_amount']" position="after">
                 <label string="Maximum Purchase Of" for="rule_maximum_amount" />
                 <div name="rule_maximum_amount" class="o_row">
                     <field name="rule_maximum_amount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
