@@ -56,10 +56,10 @@
                                     <field name="awb_pos_provider_accreditation_no" string="No." />
                                     <field name="awb_pos_provider_date" string="Date" />
                                     <field name="awb_pos_provider_valid_until" string="Valid Until" />
-                                    <field name="awb_pos_provider_ptu" string="PTU" />
+                                    <!-- <field name="awb_pos_provider_ptu" string="PTU" /> -->
                                 </group>
                             </group>
-                            <group name="additional_info">
+                            <!-- <group name="additional_info">
                                 <group name="awb_group_pos_provider_remarks" string="Other Information">
                                     <field name="awb_pos_provider_is_training_mode" string="Training Mode" />
                                     <field name="awb_pos_provider_remarks" string="Remarks" />
@@ -67,7 +67,7 @@
                                 <group name="awb_group_pos_provider_machine" string="Machine Information">
                                     <field name="taxpayer_min" string="MIN" />
                                 </group>
-                            </group>
+                            </group> -->
                         </page>
                     </notebook>
                 </xpath>
