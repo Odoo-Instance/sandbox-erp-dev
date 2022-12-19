@@ -404,6 +404,10 @@ class ZReading(models.Model):
 
 	def generate_report(self):
 		data = {
+			'taxpayer_min': self.crm_team_id.taxpayer_min,
+			'taxpayer_machine_serial_number': self.crm_team_id.taxpayer_machine_serial_number,
+			'awb_pos_provider_ptu': self.crm_team_id.awb_pos_provider_ptu,
+			'awb_pos_provider_remarks': self.crm_team_id.awb_pos_provider_remarks,
 			'date_start': self.start_date,
 			'date_stop': self.end_date,
 			'company_name': self.env.company.name,

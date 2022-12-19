@@ -8,7 +8,6 @@ class ResCompany(models.Model):
     taxpayer_remarks = fields.Char(compute='_get_tin_info', readonly=True)
     taxpayer_identification_number = fields.Char()
     taxpayer_info = fields.Char(compute='_get_tin_info', readonly=True)
-    taxpayer_min = fields.Char()
 
     awb_pos_provider_id = fields.Many2one('res.partner', string='POS Provider')
     awb_pos_provider_street = fields.Char('POS Provider Street')
@@ -22,16 +21,12 @@ class ResCompany(models.Model):
         'POS Provider Accreditation No.')
     awb_pos_provider_date = fields.Date('POS Provider Date')
     awb_pos_provider_valid_until = fields.Date('POS Provider Valid Until')
-    awb_pos_provider_ptu = fields.Char('POS Provider PTU')
-    awb_pos_provider_remarks = fields.Text(
-        'POS Provider Remarks', readonly=True, compute='_check_if_training_mode')
     awb_pos_provider_display_address = fields.Char(
         compute='_compute_awb_pos_provider_display_address', string='POS Provider Address')
     awb_pos_provider_display_date = fields.Char(
         compute='_compute_awb_pos_provider_display_date', string='Provider Display Date')
     awb_pos_provider_display_valid_until = fields.Char(
         compute='_compute_awb_pos_provider_display_date', string='Provider Display Date')
-    awb_pos_provider_is_training_mode = fields.Boolean()
 
     @api.depends('awb_pos_provider_date', 'awb_pos_provider_valid_until')
     def _compute_awb_pos_provider_display_date(self):
@@ -59,13 +54,6 @@ class ResCompany(models.Model):
                 _display_address and self.awb_pos_provider_country_id.name) else (self.awb_pos_provider_country_id.name or '')
             record.awb_pos_provider_display_address = _display_address
 
-    @api.depends('awb_pos_provider_is_training_mode')
-    def _check_if_training_mode(self):
-        for record in self:
-            if record.awb_pos_provider_is_training_mode:
-                record.awb_pos_provider_remarks = 'THIS IS NOT AN OFFICIAL RECEIPT'
-            else:
-                record.awb_pos_provider_remarks = 'THIS SERVES AS YOUR OFFICIAL RECEIPT'
 
     #check if tin is present else taxpayer_info is blank
     @api.depends('taxpayer_is_vat_registered', 'taxpayer_identification_number')

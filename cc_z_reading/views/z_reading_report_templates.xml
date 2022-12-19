@@ -13,12 +13,30 @@
                         <p t-esc="c['taxpayer_info']" />
                         <p>
                             MIN#:
-                            <t t-esc="c['taxpayer_min']" />
+                            <!-- Add moved element -->
+                            <!-- <t t-esc="c['taxpayer_min']" /> -->
+                            <t t-if="taxpayer_min">
+                                <span t-esc="taxpayer_min" />
+                            </t>
+                            <t t-elif="docs">
+                                <t t-foreach="docs" t-as="o">
+                                    <span t-esc="o.crm_team_id.taxpayer_min"/>
+                                </t>
+                            </t>
                         </p>
                         <p>
                             S/N:
                             <!-- add the serial number from the pos_sale_receipt module -->
                             <!-- <t t-esc="c['taxpayer_machine_serial_number']" /> -->
+                            <!-- <t t-esc="taxpayer_machine_serial_number" /> -->
+                            <t t-if="taxpayer_machine_serial_number">
+                                <span t-esc="taxpayer_machine_serial_number" />
+                            </t>
+                            <t t-elif="docs">
+                                <t t-foreach="docs" t-as="o">
+                                    <span t-esc="o.crm_team_id.taxpayer_machine_serial_number"/>
+                                </t>
+                            </t>
                         </p>
                     </t>
                 </div>
@@ -30,16 +48,30 @@
                 <div class="text-center" style="bottom-top: 2px solid black; font-size: 75%; line-height: 80%;">
                     <p>
                         <strong>
-                            <t t-esc="date_start" t-options="{'widget': 'datetime'}" />
+                            <t t-if="date_start">
+                                <t t-esc="date_start" t-options="{'widget': 'datetime'}" />
+                            </t>    
+                            <t t-elif="docs">
+                                <t t-foreach="docs" t-as="o">
+                                    <t t-esc="o.start_date" t-options="{'widget': 'datetime'}" />
+                                </t>
+                            </t>
                             -
-                            <t t-esc="date_stop" t-options="{'widget': 'datetime'}" />
+                            <t t-if="date_stop">
+                                <t t-esc="date_stop" t-options="{'widget': 'datetime'}" />
+                            </t>    
+                            <t t-elif="docs">
+                                <t t-foreach="docs" t-as="o">
+                                    <t t-esc="o.end_date" t-options="{'widget': 'datetime'}" />
+                                </t>
+                            </t>
                         </strong>
                     </p>
                     <p>
                         POS Provider
                     </p>
                     <t t-if='env.company.awb_pos_provider_id'>
-                        <p t-esc="env.company.awb_pos_provider_id" />
+                        <p t-esc="env.company.awb_pos_provider_id.name" />
                     </t>
                     <t t-if='env.company.awb_pos_provider_display_address'>
                         <p t-esc="env.company.awb_pos_provider_display_address" />
@@ -68,14 +100,35 @@
                             <t t-esc="env.company.awb_pos_provider_display_valid_until" />
                         </p>
                     </t>
-                    <t t-if='env.company.awb_pos_provider_ptu'>
+                    <!-- Add moved element -->
+                    <!-- <t t-if='awb_pos_provider_ptu'>
                         <p>
                             PTU No.:
-                            <t t-esc="env.company.awb_pos_provider_ptu" />
+                            <t t-esc="awb_pos_provider_ptu" />
                         </p>
+                    </t> -->
+                    <p>
+                        PTU No.:
+                        <t t-if="awb_pos_provider_ptu">
+                            <span t-esc="awb_pos_provider_ptu" />
+                        </t>    
+                        <t t-elif="docs">
+                            <t t-foreach="docs" t-as="o">
+                                <span t-esc="o.crm_team_id.awb_pos_provider_ptu"/>
+                            </t>
+                        </t>
+                    </p>
+                    <!-- Add moved element -->
+                    <!-- <t t-if='awb_pos_provider_remarks'>
+                        <p t-esc="awb_pos_provider_remarks" />
+                    </t> -->
+                    <t t-if="awb_pos_provider_remarks">
+                        <p t-esc="awb_pos_provider_remarks" />
                     </t>
-                    <t t-if='env.company.awb_pos_provider_remarks'>
-                        <p t-esc="env.company.awb_pos_provider_remarks" />
+                    <t t-elif="docs">
+                        <t t-foreach="docs" t-as="o">
+                            <p t-esc="o.crm_team_id.awb_pos_provider_remarks"/>
+                        </t>
                     </t>
                     <t t-if="env.company.taxpayer_remarks">
                         <p t-esc="env.company.taxpayer_remarks" />

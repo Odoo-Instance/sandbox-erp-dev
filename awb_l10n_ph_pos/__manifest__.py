@@ -25,6 +25,7 @@
     # always loaded
     'data': [
         'views/res_company.xml',
+        'views/crm_team_views.xml',
     ],
 
     'assets': {
