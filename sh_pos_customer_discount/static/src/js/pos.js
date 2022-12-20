@@ -8,7 +8,7 @@ odoo.define('sh_pos_customer_discount.pos', function (require) {
     var core = require('web.core');
     var _t = core._t;
 
-    models.load_fields('res.partner', ['sh_customer_discount'])
+    models.load_fields('res.partner', ['sh_customer_discount','check_sc_pwd'])
     models.load_fields('res.company', ['sh_customer_discount'])
 
     const ShClientDetailsEdit = (ClientDetailsEdit) =>
