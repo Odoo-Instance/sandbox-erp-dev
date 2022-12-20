@@ -12,8 +12,9 @@ odoo.define(
       constructor() {
         super(...arguments);
       }
+      /*to call the python function*/
       async VoidOrder(ev) {
-        window.location.reload()
+       // window.location.reload()
         var self = this;
         var void_reasons_ids = new Array();
         var inputElements = document.getElementsByClassName("void_reason");
@@ -30,16 +31,17 @@ odoo.define(
           });
           void_reasons_ids.push(new_void_order_reason_id[0]);
         }
-        debugger;
-        const pos_order_void = await this.rpc({
+        
+         await this.rpc({
           model: "pos.order",
           method: "void_order",
           args: [this.env.pos.current_order, [[6, 0, void_reasons_ids]]],
         }).then(function () {
-          // window.location.reload();
+          
         });
         this.props.resolve({ confirmed: false, payload: null });
         this.trigger("close-popup");
+        window.location.reload();
       }
     }
     VoidOrderReasonPopup.template = "VoidOrderReasonPopup";
