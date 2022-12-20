@@ -81,11 +81,11 @@ class ZReading(models.Model):
 				return sessions
 		elif crm_team_id:
 			domain = ["&", ["start_at", ">=", fields.Datetime.to_string(date_start)],
-					  ["stop_at", "<=", fields.Datetime.to_string(date_stop)],
+					  ["stop_at", "<=", fields.Datetime.to_string(date_stop)], # add 1 second
 					  ["state", "=", "closed"],
 					  ['crm_team_id.name', '=', crm_team_id[0].name]]
 			sessions = self.env['pos.session'].search(domain, order=order)
-
+			
 			if sessions:
 				self.session_ids = sessions
 				return sessions
@@ -243,7 +243,6 @@ class ZReading(models.Model):
 								print("Return Orders > ", order.id)
 								amount_total += abs(order.amount_total)
 
-			print("Total Return Ids > ", total_returns_ids)
 			self.total_returns_ids = total_returns_ids
 			r.total_returns = round(amount_total, 2)
 
@@ -284,6 +283,24 @@ class ZReading(models.Model):
 				r.total_voids = 0
 			else:
 				r.total_voids = round(total_voids[0]['sum'], 2)
+
+			# sessions = r.is_available(r.start_date, r.end_date, r.crm_team_id)
+
+			# amount_total = 0
+			# total_returns_ids = []
+			# if sessions:
+			# 	for session in sessions:
+			# 		for order in session.order_ids:
+			# 			if order.amount_total:
+			# 				if order.amount_total < 0:
+			# 					total_returns_ids.append(order.id)
+			# 					print("Return Orders > ", order.id)
+			# 					amount_total += abs(order.amount_total)
+
+			# print("Total Return Ids > ", total_returns_ids)
+			# self.total_returns_ids = total_returns_ids
+			# r.total_returns = round(amount_total, 2)
+
 
 	@api.depends('start_date', 'end_date')
 	def _fetch_total_discounts(self):

@@ -11,33 +11,29 @@
                         <p t-esc="c['street2']" />
                         <p t-esc="c['city']" />
                         <p t-esc="c['taxpayer_info']" />
+                        <!-- put time here -->
                         <p>
-                            MIN#:
-                            <!-- Add moved element -->
-                            <!-- <t t-esc="c['taxpayer_min']" /> -->
-                            <t t-if="taxpayer_min">
-                                <span t-esc="taxpayer_min" />
-                            </t>
-                            <t t-elif="docs">
-                                <t t-foreach="docs" t-as="o">
-                                    <span t-esc="o.crm_team_id.taxpayer_min"/>
+                            <strong>
+                                <t t-if="date_start">
+                                    <t t-esc="date_start" t-options="{'widget': 'datetime'}" />
+                                </t>    
+                                <t t-elif="docs">
+                                    <t t-foreach="docs" t-as="o">
+                                        <t t-esc="o.start_date" t-options="{'widget': 'datetime'}" />
+                                    </t>
                                 </t>
-                            </t>
-                        </p>
-                        <p>
-                            S/N:
-                            <!-- add the serial number from the pos_sale_receipt module -->
-                            <!-- <t t-esc="c['taxpayer_machine_serial_number']" /> -->
-                            <!-- <t t-esc="taxpayer_machine_serial_number" /> -->
-                            <t t-if="taxpayer_machine_serial_number">
-                                <span t-esc="taxpayer_machine_serial_number" />
-                            </t>
-                            <t t-elif="docs">
-                                <t t-foreach="docs" t-as="o">
-                                    <span t-esc="o.crm_team_id.taxpayer_machine_serial_number"/>
+                                -
+                                <t t-if="date_stop">
+                                    <t t-esc="date_stop" t-options="{'widget': 'datetime'}" />
+                                </t>    
+                                <t t-elif="docs">
+                                    <t t-foreach="docs" t-as="o">
+                                        <t t-esc="o.end_date" t-options="{'widget': 'datetime'}" />
+                                    </t>
                                 </t>
-                            </t>
+                            </strong>
                         </p>
+                        <!-- Move down -->
                     </t>
                 </div>
             </div>
@@ -46,27 +42,7 @@
             </div>
             <div class="footer o_standard_footer">
                 <div class="text-center" style="bottom-top: 2px solid black; font-size: 75%; line-height: 80%;">
-                    <p>
-                        <strong>
-                            <t t-if="date_start">
-                                <t t-esc="date_start" t-options="{'widget': 'datetime'}" />
-                            </t>    
-                            <t t-elif="docs">
-                                <t t-foreach="docs" t-as="o">
-                                    <t t-esc="o.start_date" t-options="{'widget': 'datetime'}" />
-                                </t>
-                            </t>
-                            -
-                            <t t-if="date_stop">
-                                <t t-esc="date_stop" t-options="{'widget': 'datetime'}" />
-                            </t>    
-                            <t t-elif="docs">
-                                <t t-foreach="docs" t-as="o">
-                                    <t t-esc="o.end_date" t-options="{'widget': 'datetime'}" />
-                                </t>
-                            </t>
-                        </strong>
-                    </p>
+                    
                     <p>
                         POS Provider
                     </p>
@@ -107,6 +83,7 @@
                             <t t-esc="awb_pos_provider_ptu" />
                         </p>
                     </t> -->
+                    <br/>
                     <p>
                         PTU No.:
                         <t t-if="awb_pos_provider_ptu">
@@ -118,6 +95,34 @@
                             </t>
                         </t>
                     </p>
+                    <p> 
+                        MIN#:
+                        <!-- Add moved element -->
+                        <!-- <t t-esc="c['taxpayer_min']" /> -->
+                        <t t-if="taxpayer_min">
+                            <span t-esc="taxpayer_min" />
+                        </t>
+                        <t t-elif="docs">
+                            <t t-foreach="docs" t-as="o">
+                                <span t-esc="o.crm_team_id.taxpayer_min"/>
+                            </t>
+                        </t>
+                    </p>
+                    <p>
+                        S/N:
+                        <!-- add the serial number from the pos_sale_receipt module -->
+                        <!-- <t t-esc="c['taxpayer_machine_serial_number']" /> -->
+                        <!-- <t t-esc="taxpayer_machine_serial_number" /> -->
+                        <t t-if="taxpayer_machine_serial_number">
+                            <span t-esc="taxpayer_machine_serial_number" />
+                        </t>
+                        <t t-elif="docs">
+                            <t t-foreach="docs" t-as="o">
+                                <span t-esc="o.crm_team_id.taxpayer_machine_serial_number"/>
+                            </t>
+                        </t>
+                    </p>
+                    <br/>
                     <!-- Add moved element -->
                     <!-- <t t-if='awb_pos_provider_remarks'>
                         <p t-esc="awb_pos_provider_remarks" />

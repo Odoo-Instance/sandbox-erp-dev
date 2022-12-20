@@ -96,8 +96,8 @@ odoo.define('awb_l10n_ph_pos.models', function (require) {
             var tax_details = this.get_tax_details();
 
             this.orderlines.each(function (line) {
-                vatable_sales = 0;
-                vat_amount = 0;
+                vatable_sales = 0; //should exclude discount
+                vat_amount = 0; //should exclude discount
                 zero_rated = 0;
                 vat_exempt = 0;
 
@@ -112,8 +112,6 @@ odoo.define('awb_l10n_ph_pos.models', function (require) {
                     var taxId = taxIds[t];
 
                     groupTaxes.push(taxId);
-                    // console.log("line", line);
-                    // groupOrderlines.push();
                 }
 
                 for (var id = 0; id < groupTaxes.length; id++) {
@@ -125,8 +123,10 @@ odoo.define('awb_l10n_ph_pos.models', function (require) {
                                 zero_rated += orderlines[id].price_without_tax;
                             }
                             else if (tax_type == "vatable") {
-                                vat_amount += orderlines[id].tax;
-                                vatable_sales += orderlines[id].price_without_tax;
+                                // added computations for discount excluded vat amount and sales
+                                var real_price_without_tax_total = orderlines[id].price_with_tax_before_discount / (1 + (tax_details[x].tax.amount / 100));
+                                vat_amount += (orderlines[id].price_with_tax_before_discount - real_price_without_tax_total);
+                                vatable_sales += real_price_without_tax_total;
                             }
                             else if (tax_type == "vat_exempt") {
                                 vat_exempt += orderlines[id].price_without_tax;
@@ -175,37 +175,20 @@ odoo.define('awb_l10n_ph_pos.models', function (require) {
             
             // VAT inclusive prices computations
             // variable initialization
+            // remove unused variables later.
             var price_with_quantity_no_discount = 0;
             var price_with_quantity_no_discount_total = 0;
-            // <t t-esc="env.pos.format_currency(line.price + (line.tax / line.quantity))" />
-
+            
             var original_price_with_tax = 0;
             var original_price_with_tax_total = 0;
-            // <t t-set="tax_before_discount" t-value="(receipt.tax_details[0].tax.amount/100) * line.price "/>
-            // <t t-set="one_unit_price_with_tax" t-value="line.price + tax_before_discount"/>
-            // <t t-set="discount" t-value="(line.discount / 100 * one_unit_price_with_tax)"/>
-            // <t t-set="one_unit_price_with_tax_discount" t-value="one_unit_price_with_tax - discount"/>
                     
             var discount_value = 0;
-            // <t t-set="one_unit_price_with_tax" t-value="line.price + (line.tax / line.quantity)"/>
-            // <t t-set="unit_price_after_tax" t-value="line.quantity * one_unit_price_with_tax"/>
-            // <t t-set="orderline_discount" t-value="(line.discount / 100 * unit_price_after_tax).toFixed(2)" />
-            // <t t-esc="orderline_discount" />
-
+            
             var price_with_quantity_with_discount_w_tax = 0;
             var price_with_quantity_with_discount_total_w_tax = 0;
-            // <t t-set="tax_before_discount" t-value="(receipt.tax_details[0].tax.amount/100) * line.price "/>
-            // <t t-set="one_unit_price_with_tax" t-value="line.price + tax_before_discount"/>
-            // <!-- <t t-set="unit_price_after_tax" t-value="line.quantity * one_unit_price_with_tax"/> -->
-            // <t t-set="discount" t-value="(line.discount / 100 * one_unit_price_with_tax)"/>
-            // <t t-set="one_unit_price_with_tax_discount" t-value="one_unit_price_with_tax - discount"/>
-            // <t t-esc="env.pos.format_currency(one_unit_price_with_tax_discount.toFixed(2))" />
-            // <span class="price_display pos-receipt-right-align">
-            //     <t t-set="subtotal" t-value="(one_unit_price_with_tax_discount * line.quantity).toFixed(2)"/>
-            //     <t t-esc="env.pos.format_currency_no_symbol(subtotal)" />
-            // </span>
-
+            
             var subtotal_tax_inclusive = 0;
+            var custom_total_discount = 0;
 
             // for every orderline
             for(var x = 0; x < orderlines.length; x++){
@@ -229,7 +212,9 @@ odoo.define('awb_l10n_ph_pos.models', function (require) {
                     }
                 }
                 //get the discount value of the orderline with the tax.
-                discount_value = (orderlines[x].discount / 100 * orderlines[x].fixed_lst_price) * orderlines[x].quantity;
+                discount_value = orderlines[x].discount / 100 * original_price_with_tax_total;
+                custom_total_discount += discount_value; 
+                // discount_value = (orderlines[x].discount / 100 * orderlines[x].fixed_lst_price) * orderlines[x].quantity;
                 //get the price of the orderline with discount, with tax.
                 price_with_quantity_with_discount_w_tax = original_price_with_tax - (discount_value / orderlines[x].quantity);
                 price_with_quantity_with_discount_total_w_tax = original_price_with_tax_total - discount_value;
@@ -259,6 +244,7 @@ odoo.define('awb_l10n_ph_pos.models', function (require) {
                 vat_amount: vat_amount,
                 orderlines: orderlines,
                 paymentlines: paymentlines,
+                custom_total_discount: custom_total_discount,
                 subtotal_tax_inclusive: subtotal_tax_inclusive,
                 subtotal: this.get_subtotal(),
                 total_with_tax: this.get_total_with_tax(),
@@ -332,7 +318,7 @@ odoo.define('awb_l10n_ph_pos.models', function (require) {
             if (!receipt.date.localestring && (!this.state || this.state == 'draft')) {
                 receipt.date.localestring = field_utils.format.datetime(moment(new Date()), {}, { timezone: false });
             }
-
+            console.log("custom_total_discount", custom_total_discount);
             return receipt;
         }
     });
