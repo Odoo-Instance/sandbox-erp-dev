@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """imports from odoo lib"""
-from odoo import api, fields, models
+from odoo import api, fields, models,_
 from odoo.exceptions import UserError
 
 """inherited model res.users to add a field"""

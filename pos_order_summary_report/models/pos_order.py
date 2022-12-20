@@ -20,7 +20,7 @@ class PosOrder(models.Model):
         string="Discount", compute="_compute_total_number_of_item", store=True)
     payment_methods = fields.Char(
         'Payment Methods', compute="_compute_total_number_of_item", store=True)
-    state = fields.Selection(selection_add=[('voided', 'Voided')])
+    #state = fields.Selection(selection_add=[('voided', 'Voided')])
 
 
     def _compute_total_number_of_item(self):
@@ -52,24 +52,29 @@ class PosOrder(models.Model):
                         zero_rated_sum = order.zero_rated
 
     def void_order(self, reasons=None):
+        """added voided function"""
         for order in self:
             related_invoice_id = self.env['account.move'].search(
                 [('pos_order_id', '=', self.id), ('move_type', '=', 'out_invoice')], limit=1)
-            ref = '%'+ related_invoice_id.name
+            #ref = '%'+ related_invoice_id.name
+            if related_invoice_id:
+                ref = '%'+ related_invoice_id.name
+            else:
+                related_invoice_id = self.env['account.move'].search(
+                [('pos_order_id', '=', self.id), ('move_type', '=', 'out_refund')], limit=1)
+                ref =  '%'+ related_invoice_id.name
             related_journal_record = self.env['account.move'].search(
             [('move_type', '=', 'entry'), ('ref', 'like', ref)], limit=1)
-
-            if reasons:
-                order.write({'state': 'voided', 'voided_order': True, 'void_reason_ids': reasons})
-            else:
-                order.write({'state': 'voided', 'voided_order': True})
-
-            return order.env['account.move.reversal']\
-                .with_context(active_model="account.move", active_ids=related_journal_record.id)\
-                .create({
-                    'reason': "",
-                    'refund_method': 'cancel',
-                    'journal_id': related_journal_record.journal_id.id,
-                    'move_ids': [(4, related_journal_record.id, 0)]
-                })\
-                .reverse_moves()
+                
+            move_reversal = self.env['account.move.reversal'].with_context(active_model="account.move", active_ids=related_journal_record.id).create({
+                        'date': related_journal_record.date,
+                        'reason': reasons,
+                        'refund_method': 'cancel',
+                        'journal_id': related_journal_record.journal_id.id,
+                        'move_ids': [(4, related_journal_record.id, 0)]
+                    })
+            move_reversal.reverse_moves()
+            order.refund()
+            order.state = 'voided'
+            related_invoice_id.state = 'voided'
+            related_journal_record.state = 'voided'

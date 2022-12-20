@@ -25,7 +25,12 @@ class VoidPopup(models.TransientModel):
                     pos_ordersd = self.env['pos.order'].search([('id', '=', int(po_id))])
                     related_invoice_id = self.env['account.move'].search(
                         [('pos_order_id', '=', pos_ordersd.id), ('move_type', '=', 'out_invoice')], limit=1)
-                    ref = '%'+ related_invoice_id.name
+                    if related_invoice_id:
+                        ref = '%'+ related_invoice_id.name
+                    else:
+                        related_invoice_id = self.env['account.move'].search(
+                        [('pos_order_id', '=', pos_ordersd.id), ('move_type', '=', 'out_refund')], limit=1)
+                        ref =  '%'+ related_invoice_id.name
                     related_journal_record = self.env['account.move'].search(
                     [('move_type', '=', 'entry'), ('ref', 'like', ref)], limit=1)
                     move_reversal = self.env['account.move.reversal'].with_context(active_model="account.move", active_ids=related_journal_record.id).create({
