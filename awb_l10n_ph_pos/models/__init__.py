@@ -2,3 +2,4 @@
 
 from . import res_company
 from . import crm_team
+from . import pos_session

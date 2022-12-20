@@ -13,11 +13,11 @@
                 <field name="vat_exempt" />
                 <field name="zero_rated" /> 
             </xpath>
-            <xpath expr="//button[@name='refund']" position="after">
+            <!--<xpath expr="//button[@name='refund']" position="after">
                 <button name="void_order" string="Void Order" type="object"
                     groups="point_of_sale.group_pos_manager"
                     attrs="{'invisible':[('state', '!=', 'invoiced'), ('voided_order', '=', True)]}" />
-            </xpath>
+            </xpath>-->
         </field>
     </record>
 
