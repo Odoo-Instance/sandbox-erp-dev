@@ -51,10 +51,8 @@ class ZReading(models.Model):
 
 	vatable_sales = fields.Float(default=0, compute="_fetch_vatable_sales")
 	vat_12 = fields.Float(default=0, compute="_fetch_vat_12")
-	vat_exempt_sales = fields.Float(
-		default=0, compute="_fetch_vat_exempt_sales")
-	zero_rated_sales = fields.Float(
-		default=0, compute="_fetch_zero_rated_sales")
+	vat_exempt_sales = fields.Float(default=0, compute="_fetch_vat_exempt_sales")
+	zero_rated_sales = fields.Float(default=0, compute="_fetch_zero_rated_sales")
 	register_total = fields.Float(default=0, compute="_compute_register_total")
 
 	beginning_reading = fields.Float(default=0, compute="_compute_reading")
@@ -73,9 +71,19 @@ class ZReading(models.Model):
 		default=0, compute="_fetch_regular_discount")
 
 	def is_available(self, date_start, date_stop, crm_team_id, order=None):
-		if crm_team_id:
-			domain = ["&", ["start_at", ">=", fields.Datetime.to_string(date_start)], ["stop_at", "<=", fields.Datetime.to_string(
-				date_stop)], ["state", "=", "closed"], ['crm_team_id.name', '=', crm_team_id[0].name]]
+		if self.env.context.get('pos_close_report', False):
+			domain = ["&", ["start_at", "=", fields.Datetime.to_string(date_start)],
+                      ["state", "=", "opened"],
+                      ['crm_team_id.name', '=', crm_team_id[0].name]]
+			sessions = self.env['pos.session'].search(domain, order=order)
+			if sessions:
+				self.session_ids = sessions
+				return sessions
+		elif crm_team_id:
+			domain = ["&", ["start_at", ">=", fields.Datetime.to_string(date_start)],
+					  ["stop_at", "<=", fields.Datetime.to_string(date_stop)],
+					  ["state", "=", "closed"],
+					  ['crm_team_id.name', '=', crm_team_id[0].name]]
 			sessions = self.env['pos.session'].search(domain, order=order)
 
 			if sessions:
@@ -432,7 +440,7 @@ class ZReading(models.Model):
 		print(self)
 		data.update(self.get_payments(
 			data['date_start'], data['date_stop']))
-
+		print(data)
 		# change self to []; what's the difference?
 		return self.env.ref('cc_z_reading.action_z_reading_report').report_action([], data=data)
 
