@@ -104,6 +104,7 @@ class ZReading(models.Model):
 		sessions = self.is_available(date_start, date_stop, self.crm_team_id)
 		if sessions:
 			orders = sessions.order_ids
+			# consider state = voided
 			payment_ids = self.env["pos.payment"].search(
 				[('pos_order_id', 'in', orders.ids)]).ids
 			if payment_ids:
@@ -184,6 +185,7 @@ class ZReading(models.Model):
 					previous_session_id = sessions[0].id
 					previous_session_id -= 1
 
+					# consider state = voided
 					domain_previous_orders = ["&",
 						["session_id", "<=", previous_session_id],
 						["session_id.state","=","closed"]
@@ -231,7 +233,7 @@ class ZReading(models.Model):
 		for r in self:
 
 			sessions = r.is_available(r.start_date, r.end_date, r.crm_team_id)
-
+			# consider state = voided
 			amount_total = 0
 			total_returns_ids = []
 			if sessions:
@@ -249,6 +251,7 @@ class ZReading(models.Model):
 	@api.depends('start_date', 'end_date', 'total_returns', 'total_discounts')
 	def _fetch_total_sales(self):
 		for r in self:
+			# consider state = voided
 			sessions = r.is_available(r.start_date, r.end_date, r.crm_team_id)
 			amount_total = 0
 			if sessions:
@@ -270,41 +273,37 @@ class ZReading(models.Model):
 			this does nothing right now;
 			will always give 0;
 		"""
+		# for r in self:
+		# 	query = """
+		# 		SELECT SUM(amount_total)
+		# 		FROM pos_order
+		# 		WHERE NOT ('%s' > date_order OR '%s' < date_order) AND
+		# 		state = 'cancel'
+		# 	""" % (fields.Datetime.to_string(r.start_date), fields.Datetime.to_string(r.end_date))
+		# 	r.env.cr.execute(query)
+		# 	total_voids = r.env.cr.dictfetchall()
+		# 	if total_voids[0]['sum'] is None:
+		# 		r.total_voids = 0
+		# 	else:
+		# 		r.total_voids = round(total_voids[0]['sum'], 2)
+		
 		for r in self:
-			query = """
-				SELECT SUM(amount_total)
-				FROM pos_order
-				WHERE NOT ('%s' > date_order OR '%s' < date_order) AND
-				state = 'cancel'
-			""" % (fields.Datetime.to_string(r.start_date), fields.Datetime.to_string(r.end_date))
-			r.env.cr.execute(query)
-			total_voids = r.env.cr.dictfetchall()
-			if total_voids[0]['sum'] is None:
-				r.total_voids = 0
-			else:
-				r.total_voids = round(total_voids[0]['sum'], 2)
+			sessions = r.is_available(r.start_date, r.end_date, r.crm_team_id)
 
-			# sessions = r.is_available(r.start_date, r.end_date, r.crm_team_id)
+			amount_total = 0
+			if sessions:
+				for session in sessions:
+					for order in session.order_ids:
+						if order.state == 'voided':
+							amount_total += abs(order.amount_total)
 
-			# amount_total = 0
-			# total_returns_ids = []
-			# if sessions:
-			# 	for session in sessions:
-			# 		for order in session.order_ids:
-			# 			if order.amount_total:
-			# 				if order.amount_total < 0:
-			# 					total_returns_ids.append(order.id)
-			# 					print("Return Orders > ", order.id)
-			# 					amount_total += abs(order.amount_total)
-
-			# print("Total Return Ids > ", total_returns_ids)
-			# self.total_returns_ids = total_returns_ids
-			# r.total_returns = round(amount_total, 2)
+			r.total_voids = round(amount_total, 2)
 
 
 	@api.depends('start_date', 'end_date')
 	def _fetch_total_discounts(self):
 		for r in self:
+			# consider state = voided
 			sessions = r.is_available(r.start_date, r.end_date, r.crm_team_id)
 			amount_total = 0
 			if sessions:
@@ -327,7 +326,7 @@ class ZReading(models.Model):
 		for r in self:
 			sessions = r.is_available(r.start_date, r.end_date, r.crm_team_id)
 			amount_total = 0
-
+			# consider state = voided
 			if sessions:
 				domain_orders = ["&",
 					  ["lines.tax_ids.tax_type", "=", "vatable"],
@@ -352,7 +351,7 @@ class ZReading(models.Model):
 		for r in self:
 			sessions = r.is_available(r.start_date, r.end_date, r.crm_team_id)
 			amount_total = 0
-
+			# consider state = voided
 			if sessions:
 				domain = ["&",
 					  ["lines.tax_ids.tax_type", "=", "vatable"],
@@ -369,7 +368,7 @@ class ZReading(models.Model):
 		for r in self:
 			sessions = r.is_available(r.start_date, r.end_date, r.crm_team_id)
 			amount_total = 0
-
+			# consider state = voided
 			if sessions:
 				domain_orders = ["&",
 					  ["lines.tax_ids.tax_type", "=", "vat_exempt"],
@@ -394,7 +393,7 @@ class ZReading(models.Model):
 		for r in self:
 			sessions = r.is_available(r.start_date, r.end_date, r.crm_team_id)
 			amount_total = 0
-
+			# consider state = voided
 			if sessions:
 				domain_orders = ["&",
 					  ["lines.tax_ids.tax_type", "=", "zero_rated"],
@@ -508,24 +507,25 @@ class ZReading(models.Model):
 		once the void module is added, add this in the view;
 	"""
 
-	# def action_view_voids(self):
-	#     sessions = self.is_available(self.start_date,self.end_date,self.crm_team_id)
-	#     print("Session Id type > ", type(sessions.ids))
-	#     if sessions:
-	#         domain = [['session_id', 'in', sessions.ids]]
-	#     else:
-	#         domain = []
-	#     return {
-	#         'name': _('Sales'),
-	#         'res_model': 'pos.order',
-	#         'view_mode': 'tree',
-	#         'views': [
-	#             (self.env.ref('cc_z_reading.z_reading_view_sales_tree').id, 'tree'),
-	#             ],
-	#         'type': 'ir.actions.act_window',
-	#         'target': 'new',
-	#         'domain': domain,
-	#     }
+	def action_view_voids(self):
+		sessions = self.is_available(self.start_date,self.end_date,self.crm_team_id)
+		# print("Session Id type > ", type(sessions.ids))
+		if sessions:
+			domain = ['&',['session_id', 'in', sessions.ids],
+			['state', '=', 'voided']]
+		else:
+			domain = []
+		return {
+			'name': _('Voids'),
+			'res_model': 'pos.order',
+			'view_mode': 'tree',
+			'views': [
+				(self.env.ref('cc_z_reading.z_reading_view_void_tree').id, 'tree'),
+				],
+			'type': 'ir.actions.act_window',
+			'target': 'new',
+			'domain': domain,
+		}
 
 	def action_view_discounts(self):
 		sessions = self.is_available(self.start_date,self.end_date,self.crm_team_id)
