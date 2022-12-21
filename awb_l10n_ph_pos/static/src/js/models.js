@@ -204,13 +204,14 @@ odoo.define('awb_l10n_ph_pos.models', function (require) {
                 //e.g. groupTaxes["9","8"] == orderlines["0", "1"] taxes
                 //when matched, calculate the original price of the orderline with the tax amount
                 //before the discount
-                for (var y in tax_details) {
-                    if (tax_details[y].tax.id == groupTaxes[x]) {
-                        original_price_with_tax = (tax_details[y].tax.amount / 100 * orderlines[x].fixed_lst_price) + orderlines[x].fixed_lst_price;
-                        original_price_with_tax_total = original_price_with_tax * orderlines[x].quantity;
+                //removed because of tax inclusive
+                // for (var y in tax_details) {
+                //     if (tax_details[y].tax.id == groupTaxes[x]) {
+                //         original_price_with_tax = (tax_details[y].tax.amount / 100 * orderlines[x].fixed_lst_price) + orderlines[x].fixed_lst_price;
+                //         original_price_with_tax_total = original_price_with_tax * orderlines[x].quantity;
                 
-                    }
-                }
+                //     }
+                // }
                 //get the discount value of the orderline with the tax.
                 discount_value = orderlines[x].discount / 100 * original_price_with_tax_total;
                 custom_total_discount += discount_value; 

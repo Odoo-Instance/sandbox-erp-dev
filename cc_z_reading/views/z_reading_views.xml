@@ -19,6 +19,24 @@
         </field>
     </record>
 
+    <record id="z_reading_view_void_tree" model="ir.ui.view">
+        <field name="name">z_reading.view.void.tree</field>
+        <field name="model">pos.order</field>
+        <field name="arch" type="xml">
+                <tree string="POS Orders" create="0" sample="1" decoration-info="state == 'draft'" decoration-muted="state == 'cancel'">
+                    <field name="currency_id" invisible="1"/>
+                    <field name="name" decoration-bf="1"/>
+                    <field name="session_id"/>
+                    <field name="date_order"/>
+                    <field name="pos_reference"/>
+                    <field name="partner_id"/>
+                    <field string="Cashier" name="user_id" widget="many2one_avatar_user"/>
+                    <field name="amount_total" sum="Amount total" widget="monetary" decoration-bf="1"/>
+                    <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state not in ('draft','cancel')"/>
+                </tree>
+        </field>
+    </record>
+
     <record id="z_reading_view_sales_tree" model="ir.ui.view">
         <field name="name">z_reading.view.sales.tree</field>
         <field name="model">pos.order</field>
@@ -177,8 +195,11 @@
                                 <button name="action_view_returns" class="btn btn-outline-dark btn-sm" type="object">
                                     <field name="total_returns" />
                                 </button>
-                                <field name="total_voids"/>
-
+                                <label class="o_form_label o_readonly_modifier" for="action_view_voids">Total Voids</label>
+                                <button name="action_view_voids" class="btn btn-outline-dark btn-sm" type="object">
+                                    <field name="total_voids" />
+                                </button>
+                                <!-- <field name="total_voids"/> -->
                                 <label class="o_form_label o_readonly_modifier" for="action_view_discounts">Total Discounts</label>
                                 <button name="action_view_discounts" class="btn btn-outline-dark btn-sm" type="object">
                                     <field name="total_discounts"/>
