@@ -1,5 +1,6 @@
 import base64
 
+from datetime import datetime, timedelta
 from odoo import _, api, fields, models
 from odoo.osv.expression import AND
 
@@ -37,8 +38,10 @@ class PosSession(models.Model):
         print(self.stop_at)
         print(self.state)
         print(self.crm_team_id)
+        print(fields.Datetime.today().strftime('%Y-%m-%d %H:%M'))
         cc_z_reading_id = self.env['cc_z_reading.z_reading'].with_context(pos_close_report=True).create({
             'start_date': self.start_at,
+            'end_date': fields.datetime.now() + timedelta(seconds=3),
             'crm_team_id': self.crm_team_id.id,
             'session_ids': [(6, 0, self.ids)],
         })
