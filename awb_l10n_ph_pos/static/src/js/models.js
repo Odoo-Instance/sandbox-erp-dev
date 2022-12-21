@@ -120,7 +120,9 @@ odoo.define('awb_l10n_ph_pos.models', function (require) {
                             var tax_type = tax_details[x].tax.tax_type;
 
                             if (tax_type == "zero_rated") {
-                                zero_rated += orderlines[id].price_without_tax;
+                                // make this discount excluded
+                                // zero_rated += orderlines[id].price_without_tax;
+                                zero_rated += orderlines[id].price_with_tax_before_discount;
                             }
                             else if (tax_type == "vatable") {
                                 // added computations for discount excluded vat amount and sales
@@ -129,7 +131,9 @@ odoo.define('awb_l10n_ph_pos.models', function (require) {
                                 vatable_sales += real_price_without_tax_total;
                             }
                             else if (tax_type == "vat_exempt") {
-                                vat_exempt += orderlines[id].price_without_tax;
+                                // make this discount excluded
+                                // vat_exempt += orderlines[id].price_without_tax;
+                                vat_exempt += orderlines[id].price_with_tax_before_discount;
                             }
                         }
                     }
@@ -213,7 +217,7 @@ odoo.define('awb_l10n_ph_pos.models', function (require) {
                 //     }
                 // }
                 //get the discount value of the orderline with the tax.
-                discount_value = orderlines[x].discount / 100 * orderlines[x].fixed_lst_price;
+                discount_value = orderlines[x].discount / 100 * orderlines[x].price_with_tax_before_discount;
                 custom_total_discount += discount_value; 
                 // discount_value = (orderlines[x].discount / 100 * orderlines[x].fixed_lst_price) * orderlines[x].quantity;
                 //get the price of the orderline with discount, with tax.
@@ -237,6 +241,11 @@ odoo.define('awb_l10n_ph_pos.models', function (require) {
                 orderlines[x].price_with_quantity_with_discount_total_w_tax = price_with_quantity_with_discount_total_w_tax.toFixed(2); // after discount
             }
 
+            // for solving total for vat info and discounts
+            // total = vatable sales + vat amount + zero rated sales + vat exempt - discounts
+
+            var sales_total = (vatable_sales + vat_amount + zero_rated + vat_exempt - custom_total_discount).toFixed(2);
+
             var receipt = {
                 receipt_number: this.pos.order.next_sequence_number, //display next receipt number
                 zero_rated: zero_rated,
@@ -246,6 +255,7 @@ odoo.define('awb_l10n_ph_pos.models', function (require) {
                 orderlines: orderlines,
                 paymentlines: paymentlines,
                 custom_total_discount: custom_total_discount,
+                sales_total: sales_total,
                 subtotal_tax_inclusive: subtotal_tax_inclusive,
                 subtotal: this.get_subtotal(),
                 total_with_tax: this.get_total_with_tax(),
@@ -320,6 +330,7 @@ odoo.define('awb_l10n_ph_pos.models', function (require) {
                 receipt.date.localestring = field_utils.format.datetime(moment(new Date()), {}, { timezone: false });
             }
             console.log("custom_total_discount", custom_total_discount);
+            console.log("sales_total", sales_total);
             return receipt;
         }
     });
