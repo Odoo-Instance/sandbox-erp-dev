@@ -13,6 +13,10 @@ from odoo import _, api, fields, models
 from odoo.osv.expression import AND
 
 
+
+
+
+
 class ZReading(models.Model):
 	_name = 'cc_z_reading.z_reading'
 	_description = 'Model for Z-Reading'
@@ -47,10 +51,8 @@ class ZReading(models.Model):
 
 	vatable_sales = fields.Float(default=0, compute="_fetch_vatable_sales")
 	vat_12 = fields.Float(default=0, compute="_fetch_vat_12")
-	vat_exempt_sales = fields.Float(
-		default=0, compute="_fetch_vat_exempt_sales")
-	zero_rated_sales = fields.Float(
-		default=0, compute="_fetch_zero_rated_sales")
+	vat_exempt_sales = fields.Float(default=0, compute="_fetch_vat_exempt_sales")
+	zero_rated_sales = fields.Float(default=0, compute="_fetch_zero_rated_sales")
 	register_total = fields.Float(default=0, compute="_compute_register_total")
 
 	beginning_reading = fields.Float(default=0, compute="_compute_reading")
@@ -59,7 +61,7 @@ class ZReading(models.Model):
 
 	crm_team_id = fields.Many2one('crm.team')
 	session_ids = fields.Many2many('pos.session', 'z_reading_sessions')
-	
+
 	# PLEASE UPDATE THE FIELD BELOW, ONCE THE MODULE FOR PWD AND SC DISCOUNTS ARE COMPLETED
 	# PLEASE ADD NEW FIELDS FOR FETCHING THE CORRESPONDING DISCOUNTS:
 	# # # * SC/PWD 5%
@@ -69,11 +71,21 @@ class ZReading(models.Model):
 		default=0, compute="_fetch_regular_discount")
 
 	def is_available(self, date_start, date_stop, crm_team_id, order=None):
-		if crm_team_id:
-			domain = ["&", ["start_at", ">=", fields.Datetime.to_string(date_start)], ["stop_at", "<=", fields.Datetime.to_string(
-				date_stop)], ["state", "=", "closed"], ['crm_team_id.name', '=', crm_team_id[0].name]]
+		if self.env.context.get('pos_close_report', False):
+			domain = ["&", ["start_at", "=", fields.Datetime.to_string(date_start)],
+                      ["state", "=", "opened"],
+                      ['crm_team_id.name', '=', crm_team_id[0].name]]
 			sessions = self.env['pos.session'].search(domain, order=order)
-
+			if sessions:
+				self.session_ids = sessions
+				return sessions
+		elif crm_team_id:
+			domain = ["&", ["start_at", ">=", fields.Datetime.to_string(date_start)],
+					  ["stop_at", "<=", fields.Datetime.to_string(date_stop)], # add 1 second
+					  ["state", "=", "closed"],
+					  ['crm_team_id.name', '=', crm_team_id[0].name]]
+			sessions = self.env['pos.session'].search(domain, order=order)
+			
 			if sessions:
 				self.session_ids = sessions
 				return sessions
@@ -105,7 +117,7 @@ class ZReading(models.Model):
 				""", (tuple(payment_ids),))
 				payments = self.env.cr.dictfetchall()
 				self.payments_ids = payment_ids
-				
+
 				print("Payments > ", payments)
 			else:
 				payments = []
@@ -152,7 +164,7 @@ class ZReading(models.Model):
 				"""
 				if sessions[0].id == 1:
 					r.beginning_reading = 0
-					
+
 					end_balance_total = 0
 					for session in sessions:
 						end_balance_total += session.total_payments_amount
@@ -198,7 +210,7 @@ class ZReading(models.Model):
 					end_balance_total + r.beginning_reading, 2)
 					print("Starting Balance > ", r.beginning_reading)
 					print("Ending Balance > ", r.ending_reading)
-				
+
 			else:
 				r.beginning_reading = 0
 				r.ending_reading = 0
@@ -231,7 +243,6 @@ class ZReading(models.Model):
 								print("Return Orders > ", order.id)
 								amount_total += abs(order.amount_total)
 
-			print("Total Return Ids > ", total_returns_ids)
 			self.total_returns_ids = total_returns_ids
 			r.total_returns = round(amount_total, 2)
 
@@ -273,6 +284,24 @@ class ZReading(models.Model):
 			else:
 				r.total_voids = round(total_voids[0]['sum'], 2)
 
+			# sessions = r.is_available(r.start_date, r.end_date, r.crm_team_id)
+
+			# amount_total = 0
+			# total_returns_ids = []
+			# if sessions:
+			# 	for session in sessions:
+			# 		for order in session.order_ids:
+			# 			if order.amount_total:
+			# 				if order.amount_total < 0:
+			# 					total_returns_ids.append(order.id)
+			# 					print("Return Orders > ", order.id)
+			# 					amount_total += abs(order.amount_total)
+
+			# print("Total Return Ids > ", total_returns_ids)
+			# self.total_returns_ids = total_returns_ids
+			# r.total_returns = round(amount_total, 2)
+
+
 	@api.depends('start_date', 'end_date')
 	def _fetch_total_discounts(self):
 		for r in self:
@@ -312,7 +341,7 @@ class ZReading(models.Model):
 					  ]
 
 				lines = self.env['pos.order.line'].search(domain_lines)
-				
+
 				for line in lines:
 					amount_total += line.price_subtotal
 
@@ -354,7 +383,7 @@ class ZReading(models.Model):
 					  ]
 
 				lines = self.env['pos.order.line'].search(domain_lines)
-				
+
 				for line in lines:
 					amount_total += line.price_subtotal
 
@@ -379,7 +408,7 @@ class ZReading(models.Model):
 					  ]
 
 				lines = self.env['pos.order.line'].search(domain_lines)
-				
+
 				for line in lines:
 					amount_total += line.price_subtotal
 
@@ -404,6 +433,10 @@ class ZReading(models.Model):
 
 	def generate_report(self):
 		data = {
+			'taxpayer_min': self.crm_team_id.taxpayer_min,
+			'taxpayer_machine_serial_number': self.crm_team_id.taxpayer_machine_serial_number,
+			'awb_pos_provider_ptu': self.crm_team_id.awb_pos_provider_ptu,
+			'awb_pos_provider_remarks': self.crm_team_id.awb_pos_provider_remarks,
 			'date_start': self.start_date,
 			'date_stop': self.end_date,
 			'company_name': self.env.company.name,
@@ -421,12 +454,12 @@ class ZReading(models.Model):
 			'beginning_reading': self.beginning_reading,
 			'ending_reading': self.ending_reading,
 		}
-
+		print(self)
 		data.update(self.get_payments(
 			data['date_start'], data['date_stop']))
-
+		print(data)
 		# change self to []; what's the difference?
-		return self.env.ref('cc_z_reading.action_z_reading_report').report_action([], data=data) 
+		return self.env.ref('cc_z_reading.action_z_reading_report').report_action([], data=data)
 
 	"""
 		below are for the z-reading views;
@@ -474,7 +507,7 @@ class ZReading(models.Model):
 		for now this is commented out;
 		once the void module is added, add this in the view;
 	"""
-	
+
 	# def action_view_voids(self):
 	#     sessions = self.is_available(self.start_date,self.end_date,self.crm_team_id)
 	#     print("Session Id type > ", type(sessions.ids))
@@ -541,7 +574,7 @@ class ZReading(models.Model):
 
 		if sessions:
 			domain = ["&",['session_id', 'in', sessions.ids],["lines.tax_ids.tax_type", "=", "vatable"]]
-			
+
 		else:
 			domain = []
 		return {
@@ -558,10 +591,10 @@ class ZReading(models.Model):
 
 	def action_view_vat_exempt(self):
 		sessions = self.is_available(self.start_date,self.end_date,self.crm_team_id)
-		
+
 		if sessions:
 			domain = ["&",['session_id', 'in', sessions.ids],["lines.tax_ids.tax_type", "=", "vat_exempt"]]
-			
+
 		else:
 			domain = []
 		return {
@@ -581,7 +614,7 @@ class ZReading(models.Model):
 
 		if sessions:
 			domain = ["&",['session_id', 'in', sessions.ids],["lines.tax_ids.tax_type", "=", "zero_rated"]]
-			
+
 		else:
 			domain = []
 		return {

@@ -34,5 +34,11 @@
         'views/z_reading_views.xml',
     ],
 
+    'assets': {
+        'point_of_sale.assets': [
+            'cc_z_reading/static/js/PopUps/clossingSessionPopUps.js',
+
+    ],
+    }
 }
 

@@ -96,8 +96,8 @@ odoo.define('awb_l10n_ph_pos.models', function (require) {
             var tax_details = this.get_tax_details();
 
             this.orderlines.each(function (line) {
-                vatable_sales = 0;
-                vat_amount = 0;
+                vatable_sales = 0; //should exclude discount
+                vat_amount = 0; //should exclude discount
                 zero_rated = 0;
                 vat_exempt = 0;
 
@@ -123,8 +123,10 @@ odoo.define('awb_l10n_ph_pos.models', function (require) {
                                 zero_rated += orderlines[id].price_without_tax;
                             }
                             else if (tax_type == "vatable") {
-                                vat_amount += orderlines[id].tax;
-                                vatable_sales += orderlines[id].price_without_tax;
+                                // added computations for discount excluded vat amount and sales
+                                var real_price_without_tax_total = orderlines[id].price_with_tax_before_discount / (1 + (tax_details[x].tax.amount / 100));
+                                vat_amount += (orderlines[id].price_with_tax_before_discount - real_price_without_tax_total);
+                                vatable_sales += real_price_without_tax_total;
                             }
                             else if (tax_type == "vat_exempt") {
                                 vat_exempt += orderlines[id].price_without_tax;
@@ -143,6 +145,97 @@ odoo.define('awb_l10n_ph_pos.models', function (require) {
             }
             
             
+            // match the crm_team_id of this session to this.pos.team.id
+            // get the sales team's info 
+
+            var this_crm_team_id = this.pos.config.crm_team_id;
+            console.log("crm_team_id ", this_crm_team_id);
+
+            var all_sales_team = this.pos.team;
+            console.log("all sales team", all_sales_team);
+
+            var min = "";
+            var sn = "";
+            var ptu = "";
+            var remarks = "";
+
+            for (var x = 0; x < all_sales_team.length; x++){
+                if (all_sales_team[x].id == this_crm_team_id[0]){
+                    min = all_sales_team[x].taxpayer_min;
+                    sn = all_sales_team[x].taxpayer_machine_serial_number;
+                    ptu = all_sales_team[x].awb_pos_provider_ptu;
+                    remarks = all_sales_team[x].awb_pos_provider_remarks;
+
+                    console.log("MIN > ", min);
+                    console.log("SN > ", sn);
+                    console.log("PTU > ", ptu);
+                    console.log("Remarks > ", remarks);
+                }
+            }
+            
+            // VAT inclusive prices computations
+            // variable initialization
+            // remove unused variables later.
+            var price_with_quantity_no_discount = 0;
+            var price_with_quantity_no_discount_total = 0;
+            
+            var original_price_with_tax = 0;
+            var original_price_with_tax_total = 0;
+                    
+            var discount_value = 0;
+            
+            var price_with_quantity_with_discount_w_tax = 0;
+            var price_with_quantity_with_discount_total_w_tax = 0;
+            
+            var subtotal_tax_inclusive = 0;
+            var custom_total_discount = 0;
+
+            // for every orderline
+            for(var x = 0; x < orderlines.length; x++){
+                console.log("for orderlines", orderlines[x]);
+
+                //compute the price of the orderline if there is a quantity but without discount
+                //multiply the quantity to get the total
+                price_with_quantity_no_discount = orderlines[x].price + (orderlines[x].tax / orderlines[x].quantity);
+                price_with_quantity_no_discount_total = price_with_quantity_no_discount * orderlines[x].quantity;
+                
+                //for all taxes details
+                //match the tax id to the groupTaxes, which is already arranged per orderlines
+                //e.g. groupTaxes["9","8"] == orderlines["0", "1"] taxes
+                //when matched, calculate the original price of the orderline with the tax amount
+                //before the discount
+                for (var y in tax_details) {
+                    if (tax_details[y].tax.id == groupTaxes[x]) {
+                        original_price_with_tax = (tax_details[y].tax.amount / 100 * orderlines[x].fixed_lst_price) + orderlines[x].fixed_lst_price;
+                        original_price_with_tax_total = original_price_with_tax * orderlines[x].quantity;
+                
+                    }
+                }
+                //get the discount value of the orderline with the tax.
+                discount_value = orderlines[x].discount / 100 * original_price_with_tax_total;
+                custom_total_discount += discount_value; 
+                // discount_value = (orderlines[x].discount / 100 * orderlines[x].fixed_lst_price) * orderlines[x].quantity;
+                //get the price of the orderline with discount, with tax.
+                price_with_quantity_with_discount_w_tax = original_price_with_tax - (discount_value / orderlines[x].quantity);
+                price_with_quantity_with_discount_total_w_tax = original_price_with_tax_total - discount_value;
+                //add to subtotal
+                //nothings gonna show up if the product has no taxes that was tagged to it
+                //since we are getting the summation from the price_with_quantity_with_discount_total_w_tax
+                subtotal_tax_inclusive += price_with_quantity_with_discount_total_w_tax;
+                //save all computations to the orderlines object for fetching
+                //all should have .toFixed to prevent minor discrepancies
+                orderlines[x].price_with_quantity_no_discount = price_with_quantity_no_discount.toFixed(2);
+                orderlines[x].price_with_quantity_no_discount_total = price_with_quantity_no_discount_total.toFixed(2);
+                
+                orderlines[x].original_price_with_tax = original_price_with_tax.toFixed(2); // before discount
+                orderlines[x].original_price_with_tax_total = original_price_with_tax_total.toFixed(2); // before discount
+                
+                orderlines[x].discount_value = discount_value.toFixed(2); // discount
+                
+                orderlines[x].price_with_quantity_with_discount_w_tax = price_with_quantity_with_discount_w_tax.toFixed(2); // after discount
+                orderlines[x].price_with_quantity_with_discount_total_w_tax = price_with_quantity_with_discount_total_w_tax.toFixed(2); // after discount
+            }
+
             var receipt = {
                 receipt_number: this.pos.order.next_sequence_number, //display next receipt number
                 zero_rated: zero_rated,
@@ -151,6 +244,8 @@ odoo.define('awb_l10n_ph_pos.models', function (require) {
                 vat_amount: vat_amount,
                 orderlines: orderlines,
                 paymentlines: paymentlines,
+                custom_total_discount: custom_total_discount,
+                subtotal_tax_inclusive: subtotal_tax_inclusive,
                 subtotal: this.get_subtotal(),
                 total_with_tax: this.get_total_with_tax(),
                 total_rounded: this.get_total_with_tax() + this.get_rounding_applied(),
@@ -180,6 +275,12 @@ odoo.define('awb_l10n_ph_pos.models', function (require) {
                     isostring: date.toISOString(),
                     localestring: this.formatted_validation_date,
                     validation_date: this.validation_date,
+                },
+                machine_info: {
+                    min: min,
+                    sn: sn,
+                    ptu: ptu,
+                    remarks: remarks,
                 },
                 company: {
                     email: company.email,
@@ -217,7 +318,7 @@ odoo.define('awb_l10n_ph_pos.models', function (require) {
             if (!receipt.date.localestring && (!this.state || this.state == 'draft')) {
                 receipt.date.localestring = field_utils.format.datetime(moment(new Date()), {}, { timezone: false });
             }
-
+            console.log("custom_total_discount", custom_total_discount);
             return receipt;
         }
     });

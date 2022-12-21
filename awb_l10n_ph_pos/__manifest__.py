@@ -17,9 +17,10 @@
         "point_of_sale",
     ],
     # always loaded
-    "data": [
-        "views/res_company.xml",
+    'data': [
+        'views/res_company.xml',
         "views/pos_session.xml",
+        'views/crm_team_views.xml',
     ],
     "assets": {
         "web.assets_qweb": [
