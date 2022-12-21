@@ -33,12 +33,6 @@ class PosSession(models.Model):
         return data
 
     def clossing_session_report(self):
-        print(self)
-        print(self.start_at)
-        print(self.stop_at)
-        print(self.state)
-        print(self.crm_team_id)
-        print(fields.Datetime.today().strftime('%Y-%m-%d %H:%M'))
         cc_z_reading_id = self.env['cc_z_reading.z_reading'].with_context(pos_close_report=True).create({
             'start_date': self.start_at,
             'end_date': fields.datetime.now() + timedelta(seconds=3),
