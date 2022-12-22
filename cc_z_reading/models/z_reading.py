@@ -92,9 +92,7 @@ class ZReading(models.Model):
             get payment ids from order ids
             if true > execute sql
             else, set payments to empty
-
             return payments
-
         """
         sessions = self.is_available(date_start, date_stop, self.crm_team_id)
         if sessions:
@@ -183,11 +181,9 @@ class ZReading(models.Model):
                                               ]
 
                     previous_orders = self.env['pos.order'].search(domain_previous_orders)
-
                     amount_total = 0
                     for order in previous_orders:
                         amount_total += order.amount_total
-
                     print("Total Sales Before This Z-Reading > ", amount_total)
 
                     r.beginning_reading = round(amount_total, 2)
@@ -245,7 +241,7 @@ class ZReading(models.Model):
             if r.payments_ids:
                 r.total_sales = sum(r.payments_ids.mapped('amount'))
             else:
-            # r.total_sales = 0;
+                # r.total_sales = 0;
                 sessions = r.is_available(r.start_date, r.end_date, r.crm_team_id)
                 amount_total = 0
                 if sessions:
@@ -258,8 +254,6 @@ class ZReading(models.Model):
 
         # amount_total = is taxed, is discounted, if - (refunded)
         # should be taxed, should not be discounted, should included refundable, should include voided
-
-    # payments for z-reading report is generated
 
     @api.depends('start_date', 'end_date')
     def _fetch_total_voids(self):
@@ -302,6 +296,56 @@ class ZReading(models.Model):
             r.subtotal = round(
                 (r.total_sales - (r.total_returns + r.total_voids + r.total_discounts)), 2)
 
+        @api.depends('start_date', 'end_date', 'total_returns', 'total_discounts')
+        def _fetch_total_sales(self):
+            for r in self:
+                # consider state = voided
+                sessions = r.is_available(r.start_date, r.end_date, r.crm_team_id)
+                amount_total = 0
+                if sessions:
+                    for session in sessions:
+                        for order in session.order_ids:
+                            amount_total += order.amount_total
+
+                amount_total += r.total_returns + r.total_discounts
+                r.total_sales = round(amount_total, 2)
+
+            # amount_total = is taxed, is discounted, if - (refunded)
+            # should be taxed, should not be discounted, should included refundable, should include voided
+
+        @api.depends('start_date', 'end_date')
+        def _fetch_total_voids(self):
+            """
+                integrate void module later;
+                this does nothing right now;
+                will always give 0;
+            """
+            # for r in self:
+            # 	query = """
+            # 		SELECT SUM(amount_total)
+            # 		FROM pos_order
+            # 		WHERE NOT ('%s' > date_order OR '%s' < date_order) AND
+            # 		state = 'cancel'
+            # 	""" % (fields.Datetime.to_string(r.start_date), fields.Datetime.to_string(r.end_date))
+            # 	r.env.cr.execute(query)
+            # 	total_voids = r.env.cr.dictfetchall()
+            # 	if total_voids[0]['sum'] is None:
+            # 		r.total_voids = 0
+            # 	else:
+            # 		r.total_voids = round(total_voids[0]['sum'], 2)
+
+            for r in self:
+                sessions = r.is_available(r.start_date, r.end_date, r.crm_team_id)
+
+                amount_total = 0
+                if sessions:
+                    for session in sessions:
+                        for order in session.order_ids:
+                            if order.state == 'voided':
+                                amount_total += abs(order.amount_total)
+
+                r.total_voids = round(amount_total, 2)
+
     @api.depends('start_date', 'end_date', 'crm_team_id')
     def _fetch_vatable_sales(self):
         for r in self:
@@ -315,17 +359,43 @@ class ZReading(models.Model):
                                  ]
                 orders = self.env['pos.order'].search(domain_orders)
 
-                domain_lines = ["&",
-                                ["tax_ids.tax_type", "=", "vatable"],
-                                ["order_id", "in", orders.ids]
-                                ]
+        @api.depends('start_date', 'end_date')
+        def _fetch_total_discounts(self):
+            for r in self:
+                # consider state = voided
+                sessions = r.is_available(r.start_date, r.end_date, r.crm_team_id)
+                amount_total = 0
+                if sessions:
+                    for session in sessions:
+                        for order in session.order_ids:
+                            for line in order.lines:
+                                amount_total += (line.qty * line.price_unit) * \
+                                                (line.discount / 100)
 
-                lines = self.env['pos.order.line'].search(domain_lines)
+            domain_lines = ["&",
+                            ["tax_ids.tax_type", "=", "vatable"],
+                            ["order_id", "in", orders.ids]
+                            ]
 
-                for line in lines:
-                    amount_total += line.price_subtotal
+            lines = self.env['pos.order.line'].search(domain_lines)
 
-            r.vatable_sales = round(amount_total, 2)
+            for line in lines:
+                amount_total += line.price_subtotal
+
+        r.vatable_sales = round(amount_total, 2)
+
+        @api.depends('start_date', 'end_date', 'crm_team_id')
+        def _fetch_vatable_sales(self):
+            for r in self:
+                sessions = r.is_available(r.start_date, r.end_date, r.crm_team_id)
+                amount_total = 0
+                # consider state = voided
+                if sessions:
+                    domain_orders = ["&",
+                                     ["lines.tax_ids.tax_type", "=", "vatable"],
+                                     ["session_id", "in", sessions.ids]
+                                     ]
+                    orders = self.env['pos.order'].search(domain_orders)
 
     @api.depends('start_date', 'end_date', 'crm_team_id')
     def _fetch_vat_12(self):
@@ -362,12 +432,39 @@ class ZReading(models.Model):
                                 ["order_id", "in", orders.ids]
                                 ]
 
-                lines = self.env['pos.order.line'].search(domain_lines)
+        @api.depends('start_date', 'end_date', 'crm_team_id')
+        def _fetch_vat_12(self):
+            for r in self:
+                sessions = r.is_available(r.start_date, r.end_date, r.crm_team_id)
+                amount_total = 0
+                # consider state = voided
+                if sessions:
+                    domain = ["&",
+                              ["lines.tax_ids.tax_type", "=", "vatable"],
+                              ["session_id", "in", sessions.ids]
+                              ]
+                    orders = self.env['pos.order'].search(domain)
+                    for order in orders:
+                        amount_total += order.amount_tax
 
-                for line in lines:
-                    amount_total += line.price_subtotal
+            lines = self.env['pos.order.line'].search(domain_lines)
+            for line in lines:
+                amount_total += line.price_subtotal
 
-            r.vat_exempt_sales = round(amount_total, 2)
+        r.vat_exempt_sales = round(amount_total, 2)
+
+        @api.depends('start_date', 'end_date', 'crm_team_id')
+        def _fetch_vat_exempt_sales(self):
+            for r in self:
+                sessions = r.is_available(r.start_date, r.end_date, r.crm_team_id)
+                amount_total = 0
+                # consider state = voided
+                if sessions:
+                    domain_orders = ["&",
+                                     ["lines.tax_ids.tax_type", "=", "vat_exempt"],
+                                     ["session_id", "in", sessions.ids]
+                                     ]
+                    orders = self.env['pos.order'].search(domain_orders)
 
     @api.depends('start_date', 'end_date', 'crm_team_id')
     def _fetch_zero_rated_sales(self):
@@ -388,11 +485,23 @@ class ZReading(models.Model):
                                 ]
 
                 lines = self.env['pos.order.line'].search(domain_lines)
-
                 for line in lines:
                     amount_total += line.price_subtotal
 
             r.zero_rated_sales = round(amount_total, 2)
+
+        @api.depends('start_date', 'end_date', 'crm_team_id')
+        def _fetch_zero_rated_sales(self):
+            for r in self:
+                sessions = r.is_available(r.start_date, r.end_date, r.crm_team_id)
+                amount_total = 0
+                # consider state = voided
+                if sessions:
+                    domain_orders = ["&",
+                                     ["lines.tax_ids.tax_type", "=", "zero_rated"],
+                                     ["session_id", "in", sessions.ids]
+                                     ]
+                    orders = self.env['pos.order'].search(domain_orders)
 
     @api.depends('vatable_sales', 'vat_12', 'vat_exempt_sales', 'zero_rated_sales')
     def _compute_register_total(self):
@@ -527,6 +636,26 @@ class ZReading(models.Model):
 
     def action_view_vat_sales(self):
         sessions = self.is_available(self.start_date, self.end_date, self.crm_team_id)
+
+        def action_view_voids(self):
+            sessions = self.is_available(self.start_date, self.end_date, self.crm_team_id)
+            # print("Session Id type > ", type(sessions.ids))
+            if sessions:
+                domain = ['&', ['session_id', 'in', sessions.ids],
+                          ['state', '=', 'voided']]
+            else:
+                domain = []
+            return {
+                'name': _('Voids'),
+                'res_model': 'pos.order',
+                'view_mode': 'tree',
+                'views': [
+                    (self.env.ref('cc_z_reading.z_reading_view_void_tree').id, 'tree'),
+                ],
+                'type': 'ir.actions.act_window',
+                'target': 'new',
+                'domain': domain,
+            }
 
         if sessions:
             domain = [['session_id', 'in', sessions.ids]]

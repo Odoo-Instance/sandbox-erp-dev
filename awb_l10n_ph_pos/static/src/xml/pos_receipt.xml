@@ -113,15 +113,15 @@
                     VAT Exempt Sales:
                     <span t-esc="env.pos.format_currency(receipt.vat_exempt)" class="pos-receipt-right-align" />
                 </div>
-                <div>
+                <div style="padding-bottom:1mm;">
                     Discounts
-                    <span t-esc="env.pos.format_currency(receipt.custom_total_discount)" class="pos-receipt-right-align"/>
+                    <span class="pos-receipt-right-align">- <span t-esc="env.pos.format_currency(receipt.custom_total_discount)"/></span>
                 </div>
                 <div class="pos-receipt-right-align">--------</div>
                 <br/>
                 <div class="pos-receipt-amount">
                     TOTAL
-                    <span t-esc="env.pos.format_currency(receipt.total_with_tax)" class="pos-receipt-right-align"/>
+                    <span t-esc="env.pos.format_currency(receipt.sales_total)" class="pos-receipt-right-align"/>
                 </div>
             </div>
             <div t-else="">
@@ -238,7 +238,7 @@
                 <t t-esc="Math.round(line.quantity * Math.pow(10, env.pos.dp['Product Unit of Measure'])) / Math.pow(10, env.pos.dp['Product Unit of Measure'])" />
                 <t t-if="!line.is_in_unit" t-esc="line.unit_name" />
                 x
-                <t t-esc="env.pos.format_currency(line.original_price_with_tax)" />
+                <t t-esc="env.pos.format_currency(line.fixed_lst_price)" />
                 <span class="price_display pos-receipt-right-align">
                     <t t-esc="env.pos.format_currency_no_symbol(line.price_with_tax_before_discount)" />
                 </span>
@@ -247,7 +247,7 @@
                 <t t-esc="Math.round(line.quantity * Math.pow(10, env.pos.dp['Product Unit of Measure'])) / Math.pow(10, env.pos.dp['Product Unit of Measure'])" />
                 <t t-if="!line.is_in_unit" t-esc="line.unit_name" />
                 x
-                <t t-esc="env.pos.format_currency(line.original_price_with_tax)" />
+                <t t-esc="env.pos.format_currency(line.fixed_lst_price)" />
                 <span class="price_display pos-receipt-right-align">
                     <t t-esc="env.pos.format_currency_no_symbol(line.price_with_tax_before_discount)" />
                 </span>
