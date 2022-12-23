@@ -252,16 +252,19 @@ class ZReading(models.Model):
 	@api.depends('start_date', 'end_date', 'total_returns', 'total_discounts')
 	def _fetch_total_sales(self):
 		for r in self:
-			# consider state = voided
-			sessions = r.is_available(r.start_date, r.end_date, r.crm_team_id)
-			amount_total = 0
-			if sessions:
-				for session in sessions:
-					for order in session.order_ids:
-						amount_total += order.amount_total
+			if r.payments_ids:
+				r.total_sales = sum(r.payments_ids.mapped('amount'))
+			else:
+				# consider state = voided
+				sessions = r.is_available(r.start_date, r.end_date, r.crm_team_id)
+				amount_total = 0
+				if sessions:
+					for session in sessions:
+						for order in session.order_ids:
+							amount_total += order.amount_total
 
-			amount_total += r.total_returns + r.total_discounts
-			r.total_sales = round(amount_total, 2)
+				amount_total += r.total_returns + r.total_discounts
+				r.total_sales = round(amount_total, 2)
 
 			# amount_total = is taxed, is discounted, if - (refunded)
 			# should be taxed, should not be discounted, should included refundable, should include voided
