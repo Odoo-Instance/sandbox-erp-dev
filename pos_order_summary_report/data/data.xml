@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		
+        
+        <!-- scheduler for previous value update -->
+		<record id="related_field_value_cron" model="ir.cron" >
+            <field name="name">pos.order: change state from voided to posted</field>
+            <field name="model_id" ref="model_pos_order"/>
+            <field name="state">code</field>
+            <field name="code">model.field_value_update()</field>
+            <field name="active" eval="False"/>
+            <field name="interval_number">1</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+        </record>
+	</data>
+</odoo>

@@ -7,6 +7,39 @@
    import { useListener } from 'web.custom_hooks';
    import { onChangeOrder, useBarcodeReader } from 'point_of_sale.custom_hooks';
    const { useState } = owl.hooks;
+   const ProductScreen = require('point_of_sale.ProductScreen');
+   
+   /*extended the product screen to set the taxes for vat output*/
+   const clickProductScreen = (ProductScreen) =>
+		class extends ProductScreen {
+			constructor() {
+				super(...arguments);
+			}
+		
+		async _clickProduct(event) {
+            if (!this.currentOrder) {
+                this.env.pos.add_new_order();
+            }
+            const product = event.detail;
+            const options = await this._getAddProductOptions(product);
+            // Do not add product if options is undefined.
+            if (!options) return;
+            if (product.taxes_id[0] == 2){
+	            for (let k = 0; k < product.pos.taxes.length; k++) {
+					if (product.pos.taxes[k].name == 'VAT (Output VAT)') {
+						product.taxes_id[0] = product.pos.taxes[k].id
+					}
+				}
+			}
+            // Add the product after having the extra information.
+            await this.currentOrder.add_product(product, options);
+            NumberBuffer.reset();
+        }
+		
+	};
+	Registries.Component.extend(ProductScreen, clickProductScreen);
+   
+   
    class DiscountPopup extends AbstractAwaitablePopup {
     constructor() {
 
@@ -27,6 +60,12 @@
             if (selectedPartner.check_sc_pwd) {
 				 _.each(this.env.pos.get_order().get_orderlines(), function (orderline) {
                     if (orderline) {
+						/*changed the the tax type based on customer*/
+						for (let k = 0; k < orderline.pos.taxes.length; k++) {
+							if (orderline.pos.taxes[k].name == 'VAT - Exempt') {
+								orderline.product.taxes_id[0] = orderline.pos.taxes[k].id
+							}
+						}
                         orderline.set_discount(discount)
                     }
             	});
