@@ -12,7 +12,7 @@
                     <field name="awb_pos_provider_ptu" string="PTU"/>
                 </group>
                 <group>
-                    <field name="awb_pos_provider_is_training_mode" string="Training Mode" />
+                    <field name="awb_pos_provider_is_training_mode" string="Training Mode" attrs="{'invisible': [('current_sequence_number', '>=', '1')]}" />
                     <field name="awb_pos_provider_remarks" string="Remarks" />
                 </group>
             </page>

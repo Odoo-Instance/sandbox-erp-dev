@@ -38,9 +38,11 @@ class PosOrder(models.Model):
                 if crm_team_record.ending_sequence_number > pow(9,6):
                     length_of_ending_sequence_number = len(str(crm_team_record.ending_sequence_number))
                     current_sequence_number_with_format = str(crm_team_record.current_sequence_number).zfill(length_of_ending_sequence_number)
-                    next_sequence_number_complete = str(next_sequence_number_sufix).zfill(length_of_ending_sequence_number)
+                    next_sequence_number_complete = str(next_sequence_number_sufix).zfill(length_of_ending_sequence_number) # check this. this does not work
                 res['pos_reference'] = crm_team_record.sale_team_prefix_id.name + ' ' + str(current_sequence_number_with_format)
                 res['next_sequence_number'] = crm_team_record.sale_team_prefix_id.name + ' ' + str(next_sequence_number_complete)
+                print("pos_reference > ", res['pos_reference'])
+                print("next_sequence_number > ", res['next_sequence_number'])
 
         return res
 

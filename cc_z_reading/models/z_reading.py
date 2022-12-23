@@ -188,7 +188,8 @@ class ZReading(models.Model):
 					# consider state = voided
 					domain_previous_orders = ["&",
 						["session_id", "<=", previous_session_id],
-						["session_id.state","=","closed"]
+						["session_id.state","=","closed"],
+						["crm_team_id.id","=", r.crm_team_id[0].id]
 					]
 
 					previous_orders = self.env['pos.order'].search(domain_previous_orders)
