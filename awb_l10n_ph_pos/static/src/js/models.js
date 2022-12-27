@@ -152,30 +152,37 @@ odoo.define('awb_l10n_ph_pos.models', function (require) {
             // match the crm_team_id of this session to this.pos.team.id
             // get the sales team's info 
 
-            var this_crm_team_id = this.pos.config.crm_team_id;
-            console.log("crm_team_id ", this_crm_team_id);
+            // var this_crm_team_id = this.pos.config.crm_team_id;
+            // console.log("crm_team_id ", this_crm_team_id);
 
-            var all_sales_team = this.pos.team;
-            console.log("all sales team", all_sales_team);
+            // var all_sales_team = this.pos.team;
+            // console.log("all sales team", all_sales_team);
 
             var min = "";
             var sn = "";
             var ptu = "";
             var remarks = "";
 
-            for (var x = 0; x < all_sales_team.length; x++){
-                if (all_sales_team[x].id == this_crm_team_id[0]){
-                    min = all_sales_team[x].taxpayer_min;
-                    sn = all_sales_team[x].taxpayer_machine_serial_number;
-                    ptu = all_sales_team[x].awb_pos_provider_ptu;
-                    remarks = all_sales_team[x].awb_pos_provider_remarks;
+            min = this.pos.team[0].taxpayer_min;
+            sn = this.pos.team[0].taxpayer_machine_serial_number;
+            ptu = this.pos.team[0].awb_pos_provider_ptu;
+            remarks = this.pos.team[0].awb_pos_provider_remarks;
 
-                    console.log("MIN > ", min);
-                    console.log("SN > ", sn);
-                    console.log("PTU > ", ptu);
-                    console.log("Remarks > ", remarks);
-                }
-            }
+            //simplified because of added domain in load_models in pos_receipt.
+
+            // for (var x = 0; x < all_sales_team.length; x++){
+            //     if (all_sales_team[x].id == this_crm_team_id[0]){
+            //         min = all_sales_team[x].taxpayer_min;
+            //         sn = all_sales_team[x].taxpayer_machine_serial_number;
+            //         ptu = all_sales_team[x].awb_pos_provider_ptu;
+            //         remarks = all_sales_team[x].awb_pos_provider_remarks;
+
+            //         console.log("MIN > ", min);
+            //         console.log("SN > ", sn);
+            //         console.log("PTU > ", ptu);
+            //         console.log("Remarks > ", remarks);
+            //     }
+            // }
             
             // VAT inclusive prices computations
             // variable initialization
@@ -329,8 +336,12 @@ odoo.define('awb_l10n_ph_pos.models', function (require) {
             if (!receipt.date.localestring && (!this.state || this.state == 'draft')) {
                 receipt.date.localestring = field_utils.format.datetime(moment(new Date()), {}, { timezone: false });
             }
+
             console.log("custom_total_discount", custom_total_discount);
             console.log("sales_total", sales_total);
+            console.log("receipt_number", receipt.receipt_number);
+            // console.log("pos_reference", this.pos.order.pos_reference);
+
             return receipt;
         }
     });
