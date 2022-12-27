@@ -14,6 +14,7 @@
     'version': '15.0.1',
     'depends': ['base', 'cc_custom_account', 'sale', 'account_accountant', 'pos_sale_receipt', 'sh_pos_customer_discount', 'point_of_sale'],
     'data': [
+        'data/data.xml',
         'security/ir.model.access.csv',
         'views/pos_order_report_view.xml',
         'views/void_order_reason_view.xml',

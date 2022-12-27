@@ -2,11 +2,12 @@
 
 <templates>
     <t t-inherit="point_of_sale.ReceiptScreen" t-inherit-mode="extension">
-        <xpath expr="//div[hasclass('top-content-center')]" position="after">
+		<!--commented this code to hode void order button in pos-->
+        <!--<xpath expr="//div[hasclass('top-content-center')]" position="after">
             <div class="button next void_order" t-if="currentOrder.is_to_invoice()" t-att-class="{ highlight: !locked }"
             t-on-click="voidOrder">
                 void order <i class="fa fa-angle-double-right"></i>
             </div>
-        </xpath>
+        </xpath>-->
     </t>
 </templates>
