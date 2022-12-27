@@ -2,23 +2,37 @@
 <templates id="template" xml:space="preserve">
    <t t-name="DiscountPopup" owl="1">
        <div role="dialog" class="modal-dialog">
-           <div class="popup" style="background-color: #7bcedb">
+           <div class="popup">
                <p class="title">
                    <t t-esc="props.title" />
                </p>
-               <span class="body">
+               <div class="body" style="width: 90%;display: inline-flex;margin-left: 5%;margin-right: 5%;">
+					<div class="select_vat" style="width: 40%;margin-left: 5%;margin-right: 5%;">
+						<select id="vat_selection_id" name="vat_selection_id" class="form-control vat_selection_id" t-on-change="captureVat" required="required" placeholder="Select" style="width: -webkit-fill-available;height: -webkit-fill-available;font-size: initial;border-radius: 3px;border: none;box-shadow: 0px 0px 0px 1px rgb(220 220 220) inset;">
+							<option value="">Select</option>
+							<option value="vat_in">VAT Inclusive</option>
+							<option value="vat_ex">VAT Exclusive</option>
+						</select>
+					</div>
+					<div class="discount_val" style="width:50%;">
+						<input id="dicountValue" type="text" value="0" style="text-align-last: end;" name="discount" t-on-change="captureChange" />
+						<span style="margin-left:5px;">%</span>
+					</div>
 
-                   <div>
-                        <input type="text" value="20" name="discount" t-on-change="captureChange"/> %
-                   </div>
-
-               </span>
-               <footer class="footer">
-                    <div class="button highlight confirm" t-on-click="confirm">
-                        Apply
-                    </div>
+               </div>
+               <footer class="footer" >
+				   <div class="awb_footer_dialog">
+				   	
                     <div class="button cancel" t-on-click="cancel">
-                        Cancel
+                        <span >Cancel</span>
+                    </div>
+                     <div class="button  confirm" style="background: #875A7B;" t-on-click="confirm">
+                        <span style="color: white;">Apply to All</span>
+                    </div>
+                    <div class="button  apply_confirm" style="background: #875A7B;" t-on-click="applyConfirm">
+                       <span style="color: white;">Apply</span>
+                    </div>
+                   
                     </div>
                 </footer>
 
