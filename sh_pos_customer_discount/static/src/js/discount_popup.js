@@ -51,7 +51,54 @@
      get currentOrder() {
            return this.env.pos.get_order();
        }
-
+		
+		captureVat(event){
+			if (event.target.value == 'vat_in'){
+				document.getElementById('dicountValue').value = '5'
+				this.state.discountData['discount'] = 5
+			} else if (event.target.value == 'vat_ex') {
+				document.getElementById('dicountValue').value = '20'
+				this.state.discountData['discount'] = 20
+			} else {
+				document.getElementById('dicountValue').value = '0'
+				this.state.discountData['discount'] = 0
+			}
+		}
+		
+		async applyConfirm(){
+			var discount = this.state.discountData['discount'];
+            var selectedPartner = this.env.pos.get_order().get_client()
+            if (selectedPartner != null) {
+            if (selectedPartner.check_sc_pwd) {
+				 _.each(this.env.pos.get_order().get_orderlines(), function (orderline) {
+                    if (orderline) {
+						/*changed the the tax type based on customer*/
+						for (let k = 0; k < orderline.pos.taxes.length; k++) {
+							if (orderline.pos.taxes[k].name == 'VAT - Exempt') {
+								orderline.product.taxes_id[0] = orderline.pos.taxes[k].id
+								if (orderline.selected) {
+									orderline.set_discount(discount)
+								}
+							}
+						}
+                        
+                    }
+            	});
+            	this.props.resolve({ confirmed: true });
+                this.trigger('close-popup');
+			} else {
+				this.showPopup('ConfirmPopup', {
+		                        title: this.env._t('Alert'),
+		                        body: this.env._t('Selected customer has no SC/PWD.'),
+		                    }); 
+			}
+			} else {
+				this.showPopup('ConfirmPopup', {
+		                        title: this.env._t('Alert'),
+		                        body: this.env._t('Please select the customer'),
+		                    }); 
+			}
+		}
 
        async confirm() {
         var discount = this.state.discountData['discount'];
