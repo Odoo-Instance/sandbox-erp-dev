@@ -26,8 +26,8 @@
         <field name='inherit_id' ref='base.view_partner_form' />
         <field name='arch' type='xml'>
             <field name='property_payment_term_id' position='before'>
-                <field name="sc_pwd"/>
-                <field name="check_sc_pwd"/>
+                <field name="sc_pwd"  groups='base.group_system'/>
+                <field name="check_sc_pwd"  groups='base.group_system'/>
                 <field name='sh_customer_discount' attrs="{'invisible': [('check_sc_pwd', '=', False)]}"/>
             </field>
         </field>
