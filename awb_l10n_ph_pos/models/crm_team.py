@@ -8,12 +8,13 @@ from odoo.exceptions import UserError
 class CrmTeam(models.Model):
     _inherit = 'crm.team'
 
-    taxpayer_min = fields.Char() #move this
+    taxpayer_min = fields.Char()  # move this
     taxpayer_machine_serial_number = fields.Char()
-    awb_pos_provider_ptu = fields.Char('POS Provider PTU') #move this
+    awb_pos_provider_ptu = fields.Char('POS Provider PTU')  # move this
     awb_pos_provider_remarks = fields.Text(
-        'POS Provider Remarks', readonly=True, compute='_check_if_training_mode') #move this
-    awb_pos_provider_is_training_mode = fields.Boolean() #move this
+        'POS Provider Remarks', readonly=True, compute='_check_if_training_mode')  # move this
+    awb_pos_provider_is_training_mode = fields.Boolean(
+        help="If you are using this Training mode your journal entries and cash flow will not calculated")  # move this
 
 
     @api.depends('awb_pos_provider_is_training_mode')

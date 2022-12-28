@@ -12,8 +12,10 @@
                     <field name="awb_pos_provider_ptu" string="PTU"/>
                 </group>
                 <group>
-                    <field name="awb_pos_provider_is_training_mode" string="Training Mode" attrs="{'invisible': [('current_sequence_number', '>=', '1')]}" />
-                    <field name="awb_pos_provider_remarks" string="Remarks" />
+                    <field name="awb_pos_provider_is_training_mode" string="Training Mode"
+                           groups="base.group_system, point_of_sale.group_pos_manager" />
+                    <field name="awb_pos_provider_remarks" string="Remarks"
+                           groups="base.group_system, point_of_sale.group_pos_manager"/>
                 </group>
             </page>
           </xpath>
