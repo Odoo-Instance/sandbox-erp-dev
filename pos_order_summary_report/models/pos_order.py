@@ -74,7 +74,11 @@ class PosOrder(models.Model):
                         'move_ids': [(4, related_journal_record.id, 0)]
                     })
             move_reversal.reverse_moves()
-            order.refund()
+            #order.refund()
             order.state = 'voided'
-            related_invoice_id.state = 'voided'
-            related_journal_record.state = 'voided'
+            #related_invoice_id.state = 'voided'
+            #related_journal_record.state = 'voided'
+    
+    def field_value_update(self):
+        """updating the value of field by cron."""
+        self._cr.execute("""update account_move set state = 'posted' where state = 'voided'""")
